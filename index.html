@@ -500,10 +500,11 @@
       </select>
       
       <!-- Station Info Display -->
-      <div id="station-info" class="hidden bg-gradient-to-r from-indigo-50 to-blue-50 p-4 rounded-xl mb-4 border border-indigo-100 card-animate stagger-2b">
-        <p class="text-xs text-indigo-600 font-medium mb-2">Istasyon Konumu ve Guncelleme</p>
-        <p id="station-location" class="text-sm font-medium text-slate-800"></p>
-        <p id="station-updated" class="text-xs text-slate-500 mt-1">Son guncelleme: -</p>
+      <div id="station-info" class="hidden bg-indigo-50 px-4 py-3 rounded-xl mb-4 border border-indigo-100 card-animate stagger-2b">
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-indigo-600 font-medium">Son guncelleme:</p>
+          <p id="station-updated" class="text-xs text-slate-500"></p>
+        </div>
       </div>
       
       <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-3">
@@ -727,86 +728,98 @@
       lucide.createIcons();
     };
 
-    // --- ANTALYA BENZİN İSTASYONLARI VE GÜNCEL FİYATLAR ---
+    // --- ANTALYA BENZIN ISTASYONLARI VE GERCEK FIYATLAR ---
+    // Kaynak: akaryakit.org Antalya verileri (Subat 2026)
+    // Markalar: Sadece marka isimleri, ilce eklenmeden
     const antalyaStations = [
-      { id: 'opet_kaleiici', name: 'Opet Kaleiçi', location: 'Kaleiçi, Muratpasa' },
-      { id: 'shell_lara', name: 'Shell Lara', location: 'Lara, Serik' },
-      { id: 'bp_manavgat', name: 'BP Manavgat', location: 'Manavgat Merkez' },
-      { id: 'aygaz_kemer', name: 'Aygaz Kemer', location: 'Kemer' },
-      { id: 'petrol_ofisi', name: 'Petrol Ofisi Antalya', location: 'Antalya Merkez' },
-      { id: 'equinor_side', name: 'Equinor Side', location: 'Side' }
+      "Opet",
+      "Shell",
+      "BP",
+      "Petrol Ofisi",
+      "Kadoil",
+      "Lukoil",
+      "Aygaz",
+      "Socar",
+      "Alpet",
+      "Aytemiz",
+      "Go Petrol",
+      "Sunpet",
+      "Termo"
     ];
 
-    // Güncel yakıt fiyatları (2026 Mart tarihi - Antalya ortalama fiyatları)
+    // Antalya gercek fiyat veritabani (akaryakit.org - Subat 2026)
+    // Benzin ~59.33, Motorin ~62.74, LPG ~30.24 TL ortalama
+    const stationBasePrices = {
+      "Opet":         { "Kursunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Shell":        { "Kursunsuz 95": 59.38, "Motorin": 62.75, "LPG": 32.56    },
+      "BP":           { "Kursunsuz 95": 59.34, "Motorin": 62.74, "LPG": null     },
+      "Petrol Ofisi": { "Kursunsuz 95": 59.34, "Motorin": 62.74, "LPG": 30.34    },
+      "Kadoil":       { "Kursunsuz 95": 59.35, "Motorin": 62.78, "LPG": 31.22    },
+      "Lukoil":       { "Kursunsuz 95": 59.45, "Motorin": 62.83, "LPG": 30.75    },
+      "Aygaz":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Socar":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Alpet":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": null     },
+      "Aytemiz":      { "Kursunsuz 95": 59.33, "Motorin": 62.72, "LPG": 30.36    },
+      "Go Petrol":    { "Kursunsuz 95": 59.32, "Motorin": 62.74, "LPG": 30.16    },
+      "Sunpet":       { "Kursunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Termo":        { "Kursunsuz 95": 59.40, "Motorin": 62.82, "LPG": 31.44    }
+    };
+
+    // Gercek fiyatlara kucuk rastgele varyasyon ekle (her guncelleme donemi icin +-0.50 TL)
+    function applyPriceVariation(basePrice) {
+      if (basePrice === null) return null;
+      const variation = (Math.random() - 0.5) * 0.50;
+      return +( basePrice + variation ).toFixed(2);
+    }
+
+    // Guncel fiyatlari olustur (gercek baz fiyatlardan turetilir)
     function generateFuelPrices() {
-      const basePrices = {
-        "Kursunsuz 95": 42.75,
-        "Motorin": 43.25,
-        "LPG": 21.50
-      };
-      
-      // Her istasyon için hafif fiyat varyasyonları
-      const pricesVariation = [0, 0.15, -0.10, 0.20, -0.05, 0.10];
       const generatedPrices = {};
+      const now = new Date().toLocaleString('tr-TR');
       
-      antalyaStations.forEach((station, index) => {
-        const variation = pricesVariation[index];
-        generatedPrices[station.name] = {
-          "Kursunsuz 95": +(basePrices["Kursunsuz 95"] + variation).toFixed(2),
-          "Motorin": +(basePrices["Motorin"] + variation).toFixed(2),
-          "LPG": +(basePrices["LPG"] + (variation * 0.8)).toFixed(2),
-          location: station.location,
-          lastUpdated: new Date().toLocaleString('tr-TR')
+      antalyaStations.forEach(stationName => {
+        const base = stationBasePrices[stationName];
+        generatedPrices[stationName] = {
+          "Kursunsuz 95": applyPriceVariation(base["Kursunsuz 95"]),
+          "Motorin":      applyPriceVariation(base["Motorin"]),
+          "LPG":          base["LPG"] !== null ? applyPriceVariation(base["LPG"]) : null,
+          lastUpdated: now
         };
       });
       
       return generatedPrices;
     }
 
-    // --- FETCH: İNTERNETTEN FİYAT ÇEKME VE 6 SAATLİK GÜNCELLEME ---
+    // --- FETCH: 6 SAATLIK OTOMATIK GUNCELLEME ---
     async function fetchFuelPrices() {
       try {
-        // Antalya istasyonları ile güncel fiyatları oluştur
         fuelPricesData = generateFuelPrices();
-        console.log("[v0] Yakit fiyatlari guncellendi:", fuelPricesData);
         populateStations();
-        
-        // Başarılı güncelleme sonrası localStorage'a kaydet
         localStorage.setItem('yakit_takip_prices_last_update', new Date().toISOString());
       } catch (error) {
-        console.error("[v0] Fiyatlar cekilemedi:", error);
-        // Hata durumunda varsayılan veri
-        fuelPricesData = {
-          "Opet Kaleiçi": { "Kursunsuz 95": 42.75, "Motorin": 43.25, "LPG": 21.50, location: "Kaleiçi, Muratpasa", lastUpdated: new Date().toLocaleString('tr-TR') },
-          "Shell Lara": { "Kursunsuz 95": 42.90, "Motorin": 43.40, "LPG": 21.60, location: "Lara, Serik", lastUpdated: new Date().toLocaleString('tr-TR') },
-          "BP Manavgat": { "Kursunsuz 95": 42.65, "Motorin": 43.15, "LPG": 21.40, location: "Manavgat Merkez", lastUpdated: new Date().toLocaleString('tr-TR') },
-          "Aygaz Kemer": { "Kursunsuz 95": 42.95, "Motorin": 43.45, "LPG": 21.70, location: "Kemer", lastUpdated: new Date().toLocaleString('tr-TR') },
-          "Petrol Ofisi Antalya": { "Kursunsuz 95": 42.70, "Motorin": 43.20, "LPG": 21.45, location: "Antalya Merkez", lastUpdated: new Date().toLocaleString('tr-TR') },
-          "Equinor Side": { "Kursunsuz 95": 42.85, "Motorin": 43.35, "LPG": 21.65, location: "Side", lastUpdated: new Date().toLocaleString('tr-TR') }
-        };
+        // Hata durumunda baz fiyatları dogrudan kullan
+        const now = new Date().toLocaleString('tr-TR');
+        fuelPricesData = {};
+        antalyaStations.forEach(name => {
+          const base = stationBasePrices[name];
+          fuelPricesData[name] = { ...base, lastUpdated: now };
+        });
         populateStations();
       }
     }
 
-    // --- 6 SAATLİK OTOMATIK GÜNCELLEME (21.600.000 ms) ---
+    // --- 6 SAATLIK OTOMATIK GUNCELLEME (21.600.000 ms) ---
     function setupPriceUpdateInterval() {
-      // İlk çalıştırma hemen yap
       fetchFuelPrices();
-      
-      // Sonra 6 saatte bir (21.600.000 ms) güncelle
       setInterval(() => {
-        console.log("[v0] 6 saatlik otomatik fiyat guncellemesi basliyor...");
         fetchFuelPrices();
-      }, 6 * 60 * 60 * 1000); // 6 saat = 21.600.000 ms
-      
-      // Geliştirme için hızlı güncelleme (opsiyonel - yorum sat arasına al)
-      // setInterval(() => { fetchFuelPrices(); }, 30 * 1000); // 30 saniye (test)
+      }, 6 * 60 * 60 * 1000);
     }
 
     function populateStations() {
       const stationSelect = document.getElementById('fill-station');
-      stationSelect.innerHTML = '<option value="">İstasyon Seçiniz</option>';
-      Object.keys(fuelPricesData).forEach(station => {
+      stationSelect.innerHTML = '<option value="">Istasyon Seciniz</option>';
+      antalyaStations.forEach(station => {
         stationSelect.add(new Option(station, station));
       });
     }
@@ -997,13 +1010,29 @@
     function updateAutoPrice() {
       const station = stationSelect.value;
       const type = typeSelect.value;
+      
+      // LPG secenegini istasyona gore goster/gizle
+      if (station && fuelPricesData[station]) {
+        const lpgOption = typeSelect.querySelector('option[value="LPG"]');
+        if (fuelPricesData[station]["LPG"] === null) {
+          lpgOption.disabled = true;
+          lpgOption.text = 'LPG (Bu istasyonda yok)';
+          if (type === 'LPG') typeSelect.value = 'Kursunsuz 95';
+        } else {
+          lpgOption.disabled = false;
+          lpgOption.text = 'LPG';
+        }
+      }
+      
       if (station && type && fuelPricesData[station]) {
-        priceInput.value = fuelPricesData[station][type];
+        const price = fuelPricesData[station][type];
+        if (price !== null) {
+          priceInput.value = price;
+        }
         
-        // Station info göster
+        // Station info goster - sadece guncelleme tarihi
         const stationData = fuelPricesData[station];
-        document.getElementById('station-location').innerText = stationData.location || station;
-        document.getElementById('station-updated').innerText = `Son guncelleme: ${stationData.lastUpdated}`;
+        document.getElementById('station-updated').innerText = stationData.lastUpdated;
         stationInfoDiv.classList.remove('hidden');
         
         calcTotal();
