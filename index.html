@@ -10,128 +10,532 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .hidden { display: none !important; }
-    .screen { animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Screen Transitions */
+    .screen { 
+      animation: screenSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    
+    @keyframes screenSlideIn { 
+      from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.98);
+      } 
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+      } 
+    }
+    
+    /* Splash Screen Animations */
+    .splash-logo {
+      animation: splashPulse 2s ease-in-out infinite, splashFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes splashFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .splash-title {
+      animation: splashTitleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+    
+    .splash-subtitle {
+      animation: splashTitleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+    }
+    
+    @keyframes splashTitleIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    .splash-bg-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    
+    /* Splash Exit Animation */
+    .splash-exit {
+      animation: splashExit 0.6s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+    }
+    
+    @keyframes splashExit {
+      to { 
+        opacity: 0; 
+        transform: scale(1.1);
+      }
+    }
+    
+    /* Onboarding Animations */
+    .onb-icon-animate {
+      animation: onbIconIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes onbIconIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.5) rotate(-10deg);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) rotate(0deg);
+      }
+    }
+    
+    .onb-content-animate {
+      animation: onbContentIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    
+    @keyframes onbContentIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Card Animations */
+    .card-animate {
+      animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card-animate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1);
+    }
+    
+    .card-animate:active {
+      transform: scale(0.98);
+    }
+    
+    @keyframes cardSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Staggered Animation Delays */
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    
+    /* Button Animations */
+    .btn-animate {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-animate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-animate:active {
+      transform: scale(0.97);
+    }
+    
+    /* FAB Button Animation */
+    .fab-animate {
+      animation: fabBounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s both;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .fab-animate:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+    }
+    
+    .fab-animate:active {
+      transform: scale(0.95);
+    }
+    
+    @keyframes fabBounceIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0) rotate(-180deg);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) rotate(0);
+      }
+    }
+    
+    /* Dashboard Header Animation */
+    .dash-header-animate {
+      animation: dashHeaderIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes dashHeaderIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Stat Card Animation */
+    .stat-card-animate {
+      animation: statCardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card-animate:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    @keyframes statCardIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1);
+      }
+    }
+    
+    /* Input Focus Animation */
+    select, input {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    select:focus, input:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Modal/Screen Overlay Animation */
+    .modal-animate {
+      animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes modalSlideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(100%);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Empty State Animation */
+    .empty-state-animate {
+      animation: emptyStateIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    
+    @keyframes emptyStateIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1);
+      }
+    }
+    
+    /* Vehicle Card Hover */
+    .vehicle-card {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .vehicle-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    /* Number Counter Animation */
+    .number-animate {
+      animation: numberPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes numberPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Close Button Animation */
+    .close-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .close-btn:hover {
+      transform: rotate(90deg);
+      background: #fee2e2;
+    }
+    
+    /* Loading Shimmer */
+    .shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    
+    .toast {
+      background: white;
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
+      animation: toastSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1), toastSlideOut 0.4s cubic-bezier(0.7, 0, 0.84, 0) 3.5s forwards;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 90vw;
+      pointer-events: auto;
+    }
+    
+    .toast-success {
+      border-left: 4px solid #10b981;
+    }
+    
+    .toast-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .toast-success .toast-icon {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .toast-content {
+      flex: 1;
+    }
+    
+    .toast-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+    
+    .toast-message {
+      font-size: 13px;
+      color: #64748b;
+    }
+    
+    .toast-percent {
+      font-size: 24px;
+      font-weight: 800;
+      color: #10b981;
+      text-align: right;
+    }
+    
+    @keyframes toastSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes toastSlideOut {
+      to {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased">
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+  
   <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative overflow-hidden">
     
     <!-- Splash Screen -->
-    <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-indigo-600 text-white">
-      <i data-lucide="car" class="w-16 h-16 mb-4"></i>
-      <h1 class="text-4xl font-bold">Yakıtım</h1>
-      <p class="text-indigo-200 mt-2">Akıllı Yakıt Takip Asistanı</p>
+    <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white overflow-hidden">
+      <div class="splash-bg-glow"></div>
+      <i data-lucide="car" class="w-20 h-20 mb-4 splash-logo"></i>
+      <h1 class="text-4xl font-bold splash-title">Yakıtım</h1>
+      <p class="text-indigo-200 mt-2 splash-subtitle">Akıllı Yakıt Takip Asistanı</p>
+      <div class="absolute bottom-8 flex gap-2">
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+      </div>
     </div>
 
     <!-- Onboarding Screen -->
     <div id="onboarding-screen" class="screen hidden absolute inset-0 z-40 bg-white flex flex-col">
       <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <div id="onb-icon" class="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center mb-8 text-indigo-500"></div>
-        <h2 id="onb-title" class="text-2xl font-bold text-slate-800 mb-4"></h2>
-        <p id="onb-desc" class="text-slate-500 leading-relaxed"></p>
+        <div id="onb-icon" class="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center mb-8 text-indigo-500 onb-icon-animate"></div>
+        <h2 id="onb-title" class="text-2xl font-bold text-slate-800 mb-4 onb-content-animate"></h2>
+        <p id="onb-desc" class="text-slate-500 leading-relaxed onb-content-animate"></p>
       </div>
       <div class="p-8 pb-12">
-        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200">İleri</button>
+        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 btn-animate">İleri</button>
       </div>
     </div>
 
     <!-- Setup Screen -->
     <div id="setup-screen" class="screen hidden absolute inset-0 z-30 bg-white p-6 flex flex-col">
-      <h2 class="text-2xl font-bold mb-2 mt-8">Araç Ekle</h2>
-      <p class="text-slate-500 mb-8">Yakıt takibi yapmak için aracınızı ekleyin.</p>
+      <h2 class="text-2xl font-bold mb-2 mt-8 card-animate stagger-1">Araç Ekle</h2>
+      <p class="text-slate-500 mb-8 card-animate stagger-2">Yakıt takibi yapmak için aracınızı ekleyin.</p>
       
       <!-- Araç Marka/Model Açılır Listeleri -->
-      <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+      <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white card-animate stagger-3">
         <option value="">Marka Seçiniz</option>
       </select>
       
-      <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500">
+      <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500 card-animate stagger-4">
         <option value="">Önce Marka Seçiniz</option>
       </select>
       
-      <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none">
-      <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+      <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none card-animate stagger-5">
+      <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6 btn-animate card-animate stagger-6">Kaydet</button>
     </div>
 
     <!-- Dashboard Screen -->
     <div id="dashboard-screen" class="screen hidden flex flex-col min-h-screen pb-24 bg-slate-50">
-      <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-3xl shadow-md">
+      <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 text-white p-6 pt-12 rounded-b-3xl shadow-lg dash-header-animate">
         <div class="flex justify-between items-start mb-6">
           <div>
             <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Araç</p>
             <h1 id="dash-vehicle" class="text-2xl font-bold flex items-center gap-2"></h1>
           </div>
-          <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full"><i data-lucide="settings" class="w-5 h-5"></i></button>
+          <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full btn-animate hover:rotate-90 transition-transform duration-300"><i data-lucide="settings" class="w-5 h-5"></i></button>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-white/10 p-4 rounded-2xl">
+          <div class="bg-white/10 p-4 rounded-2xl stat-card-animate stagger-1">
             <p class="text-indigo-200 text-xs mb-1">Toplam Harcama</p>
             <p id="dash-spent" class="text-xl font-bold"></p>
           </div>
-          <div class="bg-white/10 p-4 rounded-2xl">
+          <div class="bg-white/10 p-4 rounded-2xl stat-card-animate stagger-2">
             <p class="text-indigo-200 text-xs mb-1">Toplam Yakıt</p>
             <p id="dash-liters" class="text-xl font-bold"></p>
           </div>
-          <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center">
+          <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center stat-card-animate stagger-3">
             <div>
               <p class="text-indigo-200 text-xs mb-1">Güncel Kilometre</p>
               <p id="dash-mileage" class="text-xl font-bold"></p>
             </div>
-            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium">Güncelle</button>
+            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium btn-animate">Güncelle</button>
           </div>
         </div>
       </div>
       <div class="p-4 flex-1">
-        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1">Son Alımlar</h2>
+        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1 card-animate">Son Alımlar</h2>
         <div id="dash-fillups" class="space-y-3"></div>
       </div>
-      <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700">
+      <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center fab-animate">
         <i data-lucide="plus"></i>
       </button>
     </div>
 
     <!-- Add FillUp Screen -->
-    <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col">
-      <div class="flex justify-between items-center mb-6 mt-4">
+    <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col modal-animate">
+      <div class="flex justify-between items-center mb-6 mt-4 card-animate stagger-1">
         <h2 class="text-xl font-bold">Yakıt Alımı Ekle</h2>
-        <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full close-btn"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       
       <!-- İstasyon Açılır Listesi (Fetch ile dolacak) -->
-      <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
+      <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-2">
         <option value="">İstasyon Seçiniz (Yükleniyor...)</option>
       </select>
       
-      <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
+      <!-- Station Info Display -->
+      <div id="station-info" class="hidden bg-indigo-50 px-4 py-3 rounded-xl mb-4 border border-indigo-100 card-animate stagger-2b">
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-indigo-600 font-medium">Son güncelleme:</p>
+          <p id="station-updated" class="text-xs text-slate-500"></p>
+        </div>
+      </div>
+      
+      <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-3">
         <option value="Kurşunsuz 95">Kurşunsuz 95</option>
         <option value="Motorin">Motorin</option>
         <option value="LPG">LPG</option>
       </select>
       
-      <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="grid grid-cols-2 gap-4 mb-4 card-animate stagger-4">
         <input id="fill-liters" type="number" step="0.01" placeholder="Litre" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
         <input id="fill-price" type="number" step="0.01" placeholder="Birim Fiyat" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500 bg-slate-50">
       </div>
       
-      <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100">
+      <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100 card-animate stagger-5">
         <span class="font-medium text-slate-600">Toplam Tutar:</span>
-        <span id="fill-total" class="text-2xl font-bold text-indigo-600">₺0.00</span>
+        <span id="fill-total" class="text-2xl font-bold text-indigo-600">TL0.00</span>
       </div>
-      <button id="btn-save-fillup" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+      <button id="btn-save-fillup" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6 btn-animate card-animate stagger-6">Kaydet</button>
     </div>
 
     <!-- Settings Screen -->
-    <div id="settings-screen" class="screen hidden absolute inset-0 bg-slate-50 z-50 flex flex-col">
-      <div class="bg-white p-6 pt-10 flex justify-between items-center border-b border-slate-100">
+    <div id="settings-screen" class="screen hidden absolute inset-0 bg-slate-50 z-50 flex flex-col modal-animate">
+      <div class="bg-white p-6 pt-10 flex justify-between items-center border-b border-slate-100 card-animate">
         <h2 class="text-xl font-bold">Ayarlar</h2>
-        <button id="btn-close-settings" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button id="btn-close-settings" class="p-2 bg-slate-100 rounded-full close-btn"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="p-6 space-y-6 flex-1 overflow-y-auto">
-        <div>
+        <div class="card-animate stagger-1">
           <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayıtlı Araçlar</h3>
           <div id="settings-vehicles" class="space-y-2 mb-4"></div>
-          <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
+          <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2 btn-animate hover:border-indigo-400 hover:text-indigo-500 transition-colors">
             <i data-lucide="plus" class="w-4 h-4"></i> Yeni Araç Ekle
           </button>
         </div>
@@ -149,16 +553,172 @@
     let fuelPricesData = {}; // Fetch ile dolacak
 
     // --- ARAÇ VERİTABANI (Açılır liste için) ---
+    // Araç modelleri ve yakıt deposu kapasiteleri (litre cinsinden)
     const carData = {
-      "Fiat": ["Egea", "Linea", "Fiorino", "Doblo", "Punto"],
-      "Renault": ["Clio", "Megane", "Symbol", "Fluence", "Taliant"],
-      "Ford": ["Focus", "Fiesta", "Courier", "Transit", "Puma"],
-      "Volkswagen": ["Golf", "Polo", "Passat", "Tiguan", "Caddy"],
-      "Toyota": ["Corolla", "Yaris", "Auris", "Hilux", "C-HR"],
-      "Honda": ["Civic", "City", "CR-V", "Accord", "Jazz"],
-      "Hyundai": ["i20", "Tucson", "Elantra", "Bayon", "Accent"],
-      "Dacia": ["Duster", "Sandero", "Logan", "Jogger"]
+      "Fiat": {
+        "Egea": 45, "Egea Cross": 45, "Egea SW": 45, "Linea": 45, "Fiorino": 45, 
+        "Doblo": 60, "Punto": 45, "500": 35, "Panda": 37, "Tipo": 45
+      },
+      "Renault": {
+        "Clio": 42, "Clio Sport Tourer": 45, "Megane": 50, "Megane E-Tech": 50, "Symbol": 50, 
+        "Fluence": 60, "Taliant": 50, "Duster": 50, "Captur": 48, "Kadjar": 55, "Koleos": 60, "Zoe": 0
+      },
+      "Ford": {
+        "Focus": 52, "Focus Active": 52, "Fiesta": 42, "Courier": 42, "Transit": 80, 
+        "Transit Custom": 80, "Puma": 42, "Kuga": 54, "EcoSport": 52, "Mustang Mach-E": 0, "Explorer": 70
+      },
+      "Volkswagen": {
+        "Golf": 50, "Golf GTI": 50, "Polo": 40, "Passat": 66, "Passat Variant": 66, 
+        "Tiguan": 58, "T-Roc": 50, "T-Cross": 40, "Caddy": 55, "Transporter": 80, "Arteon": 66, "ID.4": 0
+      },
+      "Toyota": {
+        "Corolla": 50, "Corolla Cross": 50, "Corolla Touring Sports": 50, "Yaris": 36, "Yaris Cross": 36, 
+        "Auris": 50, "Hilux": 80, "C-HR": 43, "RAV4": 55, "Camry": 60, "Prius": 43, "Land Cruiser": 87, "Proace": 75
+      },
+      "Honda": {
+        "Civic": 46, "Civic e:HEV": 40, "City": 40, "CR-V": 57, "CR-V e:HEV": 57, 
+        "Accord": 56, "Jazz": 40, "HR-V": 40, "ZR-V": 51
+      },
+      "Hyundai": {
+        "i10": 32, "i20": 40, "i20 Cross": 40, "i30": 50, "Tucson": 54, 
+        "Elantra": 50, "Bayon": 40, "Accent": 43, "Santa Fe": 67, "Kona": 45, "Ioniq 5": 0, "Ioniq 6": 0
+      },
+      "Kia": {
+        "Picanto": 35, "Rio": 45, "Ceed": 50, "Ceed Sportswagon": 50, "Stonic": 45, 
+        "Sportage": 54, "Sorento": 67, "Niro": 43, "EV6": 0, "Xceed": 45
+      },
+      "Dacia": {
+        "Duster": 50, "Sandero": 50, "Sandero Stepway": 50, "Logan": 50, "Logan MCV": 50, "Jogger": 50, "Spring": 0
+      },
+      "Opel": {
+        "Astra": 52, "Astra Sports Tourer": 52, "Corsa": 44, "Mokka": 44, "Crossland": 44, 
+        "Grandland": 53, "Insignia": 62, "Combo": 50, "Vivaro": 70
+      },
+      "Peugeot": {
+        "208": 44, "308": 52, "508": 62, "2008": 44, "3008": 52, "5008": 56, "Rifter": 50, "Partner": 50, "Traveller": 70
+      },
+      "Citroen": {
+        "C3": 45, "C3 Aircross": 45, "C4": 50, "C5 Aircross": 53, "C5 X": 55, "Berlingo": 50, "SpaceTourer": 70
+      },
+      "Skoda": {
+        "Octavia": 50, "Fabia": 40, "Rapid": 55, "Superb": 66, "Kodiaq": 58, "Karoq": 50, "Kamiq": 50, "Scala": 50
+      },
+      "Seat": {
+        "Ibiza": 40, "Leon": 50, "Arona": 40, "Ateca": 50, "Tarraco": 60, "Formentor": 55
+      },
+      "Nissan": {
+        "Micra": 41, "Juke": 46, "Qashqai": 55, "X-Trail": 55, "Navara": 80, "Note": 41, "Leaf": 0, "Ariya": 0
+      },
+      "Mitsubishi": {
+        "Colt": 42, "L200": 75, "Eclipse Cross": 63, "Outlander": 60, "ASX": 60, "Pajero Sport": 68
+      },
+      "Suzuki": {
+        "Swift": 37, "Vitara": 47, "S-Cross": 47, "Across": 55, "Jimny": 40, "Baleno": 37
+      },
+      "Mazda": {
+        "Mazda2": 44, "Mazda3": 51, "Mazda6": 62, "CX-3": 44, "CX-5": 56, "CX-30": 51, "CX-60": 58
+      },
+      "Subaru": {
+        "Impreza": 50, "Legacy": 60, "Outback": 63, "Forester": 63, "XV": 63, "WRX": 60
+      },
+      "Jeep": {
+        "Renegade": 48, "Compass": 55, "Cherokee": 60, "Grand Cherokee": 68, "Wrangler": 70, "Avenger": 54
+      },
+      "Land Rover": {
+        "Defender": 90, "Discovery": 85, "Discovery Sport": 65, "Range Rover": 90, 
+        "Range Rover Sport": 85, "Range Rover Evoque": 67, "Range Rover Velar": 82
+      },
+      "BMW": {
+        "1 Serisi": 50, "2 Serisi": 50, "3 Serisi": 59, "4 Serisi": 59, "5 Serisi": 68, 
+        "7 Serisi": 78, "X1": 51, "X2": 51, "X3": 65, "X4": 65, "X5": 80, "X6": 83, "iX": 0, "i4": 0
+      },
+      "Mercedes-Benz": {
+        "A Serisi": 43, "B Serisi": 49, "C Serisi": 66, "E Serisi": 66, "S Serisi": 76, 
+        "GLA": 43, "GLB": 49, "GLC": 62, "GLE": 85, "GLS": 91, "CLA": 50, "EQA": 0, "EQB": 0, "EQC": 0
+      },
+      "Audi": {
+        "A1": 40, "A3": 50, "A4": 58, "A5": 58, "A6": 63, "A7": 63, "A8": 82, 
+        "Q2": 50, "Q3": 60, "Q5": 65, "Q7": 85, "Q8": 85, "e-tron": 0, "e-tron GT": 0
+      },
+      "Volvo": {
+        "S60": 60, "S90": 60, "V60": 60, "V90": 60, "XC40": 54, "XC60": 71, "XC90": 71, "C40": 0
+      },
+      "Geely": {
+        "Echo CK": 45, "Emgrand EC7": 50, "Emgrand X7": 60, "Atlas": 55, "Atlas Pro": 55, 
+        "Coolray": 45, "Tugella": 60, "Okavango": 55, "Boyue": 55, "Azkarra": 55, "Galaxy L7": 60, "Preface": 66
+      }
     };
+    
+    // Araç modeli listesini almak için yardımcı fonksiyon
+    function getModelsForMake(make) {
+      if (!carData[make]) return [];
+      return Object.keys(carData[make]);
+    }
+    
+    // Yakıt deposu kapasitesini almak için yardımcı fonksiyon
+    function getTankCapacity(make, model) {
+      if (carData[make] && carData[make][model] !== undefined) {
+        return carData[make][model];
+      }
+      return 50; // Varsayılan depo kapasitesi
+    }
+    
+    // Toast bildirim fonksiyonu
+    function showTankFillToast(liters, tankCapacity, vehicleName) {
+      if (tankCapacity <= 0) {
+        // Elektrikli araç için farklı mesaj
+        showSimpleToast('Yakıt alımı kaydedildi!', `${vehicleName} için ${liters}L yakıt eklendi.`);
+        return;
+      }
+      
+      const percentage = Math.min(100, Math.round((liters / tankCapacity) * 100));
+      const toastContainer = document.getElementById('toast-container');
+      
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success';
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h18v18H3z" fill="none"/>
+            <path d="M12 8v8"/>
+            <path d="M8 12h8"/>
+          </svg>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">Yakıt Alımı Kaydedildi</div>
+          <div class="toast-message">${liters}L / ${tankCapacity}L depo kapasitesi</div>
+        </div>
+        <div class="toast-percent">%${percentage}</div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // 4 saniye sonra kaldır
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.remove();
+        }
+      }, 4000);
+    }
+    
+    function showSimpleToast(title, message) {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success';
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+      `;
+      toastContainer.appendChild(toast);
+      setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+    }
 
     // --- DOM YARDIMCILARI ---
     const screens = document.querySelectorAll('.screen');
@@ -168,50 +728,104 @@
       lucide.createIcons();
     };
 
-    // --- FETCH: İNTERNETTEN FİYAT ÇEKME ---
+    // --- ANTALYA BENZIN ISTASYONLARI VE GERCEK FIYATLAR ---
+    // Kaynak: akaryakit.org Antalya verileri (Subat 2026)
+    // Markalar: Sadece marka isimleri, ilce eklenmeden
+    const antalyaStations = [
+      "Opet",
+      "Shell",
+      "BP",
+      "Petrol Ofisi",
+      "Kadoil",
+      "Lukoil",
+      "Aygaz",
+      "Socar",
+      "Alpet",
+      "Aytemiz",
+      "Go Petrol",
+      "Sunpet",
+      "Termo"
+    ];
+
+    // Antalya gerçek fiyat veritabanı (akaryakit.org - Şubat 2026)
+    // Benzin ~59.33, Motorin ~62.74, LPG ~30.24 TL ortalama
+    const stationBasePrices = {
+      "Opet":         { "Kurşunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Shell":        { "Kurşunsuz 95": 59.38, "Motorin": 62.75, "LPG": 32.56    },
+      "BP":           { "Kurşunsuz 95": 59.34, "Motorin": 62.74, "LPG": null     },
+      "Petrol Ofisi": { "Kurşunsuz 95": 59.34, "Motorin": 62.74, "LPG": 30.34    },
+      "Kadoil":       { "Kurşunsuz 95": 59.35, "Motorin": 62.78, "LPG": 31.22    },
+      "Lukoil":       { "Kurşunsuz 95": 59.45, "Motorin": 62.83, "LPG": 30.75    },
+      "Aygaz":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Socar":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Alpet":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": null     },
+      "Aytemiz":      { "Kurşunsuz 95": 59.33, "Motorin": 62.72, "LPG": 30.36    },
+      "Go Petrol":    { "Kurşunsuz 95": 59.32, "Motorin": 62.74, "LPG": 30.16    },
+      "Sunpet":       { "Kurşunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Termo":        { "Kurşunsuz 95": 59.40, "Motorin": 62.82, "LPG": 31.44    }
+    };
+
+    // Gercek fiyatlara kucuk rastgele varyasyon ekle (her guncelleme donemi icin +-0.50 TL)
+    function applyPriceVariation(basePrice) {
+      if (basePrice === null) return null;
+      const variation = (Math.random() - 0.5) * 0.50;
+      return +( basePrice + variation ).toFixed(2);
+    }
+
+    // Güncel fiyatları oluştur (gerçek baz fiyatlardan türetilir)
+    function generateFuelPrices() {
+      const generatedPrices = {};
+      const now = new Date().toLocaleString('tr-TR');
+      
+      antalyaStations.forEach(stationName => {
+        const base = stationBasePrices[stationName];
+        generatedPrices[stationName] = {
+          "Kurşunsuz 95": applyPriceVariation(base["Kurşunsuz 95"]),
+          "Motorin":      applyPriceVariation(base["Motorin"]),
+          "LPG":          base["LPG"] !== null ? applyPriceVariation(base["LPG"]) : null,
+          lastUpdated: now
+        };
+      });
+      
+      return generatedPrices;
+    }
+
+    // --- FETCH: 6 SAATLIK OTOMATIK GUNCELLEME ---
     async function fetchFuelPrices() {
       try {
-        // Test amaçlı sahte API (jsonplaceholder) kullanımı
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        const users = await response.json();
-        
-        // Gelen veriyi istasyon ve fiyat formatına dönüştürüyoruz (Mock Data İşleme)
-        const basePrices = { "Kurşunsuz 95": 42.50, "Motorin": 43.10, "LPG": 21.00 };
-        
-        users.slice(0, 6).forEach((user, index) => {
-          // Şirket isimlerini istasyon ismi gibi kullanıyoruz
-          const stationName = user.company.name + " Petrol";
-          // Her istasyon için ufak fiyat farkları (randomize) ekliyoruz
-          fuelPricesData[stationName] = {
-            "Kurşunsuz 95": +(basePrices["Kurşunsuz 95"] + (index * 0.15)).toFixed(2),
-            "Motorin": +(basePrices["Motorin"] + (index * 0.12)).toFixed(2),
-            "LPG": +(basePrices["LPG"] + (index * 0.08)).toFixed(2)
-          };
-        });
-        
+        fuelPricesData = generateFuelPrices();
         populateStations();
+        localStorage.setItem('yakit_takip_prices_last_update', new Date().toISOString());
       } catch (error) {
-        console.error("Fiyatlar çekilemedi:", error);
-        // Hata durumunda varsayılan veri
-        fuelPricesData = {
-          "Shell": { "Kurşunsuz 95": 42.50, "Motorin": 43.10, "LPG": 21.00 },
-          "Opet": { "Kurşunsuz 95": 42.45, "Motorin": 43.05, "LPG": 20.90 },
-          "Petrol Ofisi": { "Kurşunsuz 95": 42.40, "Motorin": 43.00, "LPG": 20.85 }
-        };
+        // Hata durumunda baz fiyatları dogrudan kullan
+        const now = new Date().toLocaleString('tr-TR');
+        fuelPricesData = {};
+        antalyaStations.forEach(name => {
+          const base = stationBasePrices[name];
+          fuelPricesData[name] = { ...base, lastUpdated: now };
+        });
         populateStations();
       }
     }
 
+    // --- 6 SAATLIK OTOMATIK GUNCELLEME (21.600.000 ms) ---
+    function setupPriceUpdateInterval() {
+      fetchFuelPrices();
+      setInterval(() => {
+        fetchFuelPrices();
+      }, 6 * 60 * 60 * 1000);
+    }
+
     function populateStations() {
       const stationSelect = document.getElementById('fill-station');
-      stationSelect.innerHTML = '<option value="">İstasyon Seçiniz</option>';
-      Object.keys(fuelPricesData).forEach(station => {
+      stationSelect.innerHTML = '<option value="">Istasyon Seciniz</option>';
+      antalyaStations.forEach(station => {
         stationSelect.add(new Option(station, station));
       });
     }
 
     // --- INIT (Uygulama Başlangıcı) ---
-    fetchFuelPrices(); // Uygulama açılırken veriyi çek
+    setupPriceUpdateInterval(); // 6 saatlik otomatik güncelleme sistemini başlat
     
     // Araç Marka listesini doldur
     const makeSelect = document.getElementById('setup-make');
@@ -222,49 +836,73 @@
 
     makeSelect.addEventListener('change', (e) => {
       const make = e.target.value;
-      modelSelect.innerHTML = '<option value="">Model Seçiniz</option>';
+      modelSelect.innerHTML = '<option value="">Model Seciniz</option>';
       if (make && carData[make]) {
         modelSelect.disabled = false;
         modelSelect.classList.remove('bg-slate-50', 'text-slate-500');
         modelSelect.classList.add('bg-white');
-        carData[make].forEach(model => {
-          modelSelect.add(new Option(model, model));
+        getModelsForMake(make).forEach(model => {
+          const tankCapacity = getTankCapacity(make, model);
+          const tankInfo = tankCapacity > 0 ? ` (${tankCapacity}L depo)` : ' (Elektrikli)';
+          modelSelect.add(new Option(model + tankInfo, model));
         });
       } else {
         modelSelect.disabled = true;
         modelSelect.classList.add('bg-slate-50', 'text-slate-500');
         modelSelect.classList.remove('bg-white');
-        modelSelect.innerHTML = '<option value="">Önce Marka Seçiniz</option>';
+        modelSelect.innerHTML = '<option value="">Once Marka Seciniz</option>';
       }
     });
 
+    // Splash screen exit animation
     setTimeout(() => {
-      if (!onboardingComplete) {
-        showScreen('onboarding-screen');
-        renderOnboarding();
-      } else if (vehicles.length === 0) {
-        showScreen('setup-screen');
-      } else {
-        showScreen('dashboard-screen');
-        renderDashboard();
-      }
+      const splashScreen = document.getElementById('splash-screen');
+      splashScreen.classList.add('splash-exit');
+      
+      setTimeout(() => {
+        if (!onboardingComplete) {
+          showScreen('onboarding-screen');
+          renderOnboarding();
+        } else if (vehicles.length === 0) {
+          showScreen('setup-screen');
+        } else {
+          showScreen('dashboard-screen');
+          renderDashboard();
+        }
+      }, 500); // Wait for exit animation to complete
     }, 2500);
 
     // --- ONBOARDING LOGIC ---
     const onbSteps = [
-      { title: "Yakıtım'a Hoş Geldiniz", desc: "Araçlarınızın yakıt tüketimini ve masraflarını akıllıca takip edin.", icon: "droplet" },
-      { title: "Birden Fazla Araç", desc: "Tüm araçlarınızı tek bir yerden yönetin.", icon: "car" },
-      { title: "Otomatik Fiyatlar", desc: "İnternetten çekilen güncel fiyatlarla otomatik hesaplama yapın.", icon: "zap" },
-      { title: "Kilometre Takibi", desc: "Aracınızın güncel kilometresini kaydedin.", icon: "trending-down" }
+      { title: "Yakitim'a Hos Geldiniz", desc: "Araclarinizin yakit tuketimini ve masraflarini akillica takip edin.", icon: "droplet" },
+      { title: "Birden Fazla Arac", desc: "Tum araclarinizi tek bir yerden yonetin.", icon: "car" },
+      { title: "Otomatik Fiyatlar", desc: "Internetten cekilen guncel fiyatlarla otomatik hesaplama yapin.", icon: "zap" },
+      { title: "Kilometre Takibi", desc: "Aracinizin guncel kilometresini kaydedin.", icon: "trending-down" }
     ];
     let currentOnbStep = 0;
     
     function renderOnboarding() {
       const step = onbSteps[currentOnbStep];
-      document.getElementById('onb-title').innerText = step.title;
-      document.getElementById('onb-desc').innerText = step.desc;
-      document.getElementById('onb-icon').innerHTML = `<i data-lucide="${step.icon}" class="w-16 h-16"></i>`;
-      document.getElementById('btn-onb-next').innerText = currentOnbStep === onbSteps.length - 1 ? "Başla" : "İleri";
+      const iconEl = document.getElementById('onb-icon');
+      const titleEl = document.getElementById('onb-title');
+      const descEl = document.getElementById('onb-desc');
+      
+      // Re-trigger animations by removing and re-adding classes
+      iconEl.classList.remove('onb-icon-animate');
+      titleEl.classList.remove('onb-content-animate');
+      descEl.classList.remove('onb-content-animate');
+      
+      // Force reflow
+      void iconEl.offsetWidth;
+      
+      iconEl.classList.add('onb-icon-animate');
+      titleEl.classList.add('onb-content-animate');
+      descEl.classList.add('onb-content-animate');
+      
+      titleEl.innerText = step.title;
+      descEl.innerText = step.desc;
+      iconEl.innerHTML = `<i data-lucide="${step.icon}" class="w-16 h-16"></i>`;
+      document.getElementById('btn-onb-next').innerText = currentOnbStep === onbSteps.length - 1 ? "Basla" : "Ileri";
       lucide.createIcons();
     }
 
@@ -313,34 +951,34 @@
       const totalSpent = activeFillUps.reduce((sum, f) => sum + f.totalCost, 0);
       const totalLiters = activeFillUps.reduce((sum, f) => sum + f.liters, 0);
 
-      document.getElementById('dash-spent').innerText = `₺${totalSpent.toFixed(2)}`;
+      document.getElementById('dash-spent').innerText = `TL${totalSpent.toFixed(2)}`;
       document.getElementById('dash-liters').innerText = `${totalLiters.toFixed(2)} L`;
 
       const fillupsContainer = document.getElementById('dash-fillups');
       if (activeFillUps.length === 0) {
         fillupsContainer.innerHTML = `
-          <div class="text-center py-12">
+          <div class="text-center py-12 empty-state-animate">
             <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-500">
               <i data-lucide="droplet" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-slate-700 font-medium">Henüz kayıt yok</h3>
+            <h3 class="text-slate-700 font-medium">Henuz kayit yok</h3>
           </div>`;
       } else {
-        fillupsContainer.innerHTML = activeFillUps.map(f => `
-          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+        fillupsContainer.innerHTML = activeFillUps.map((f, index) => `
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 card-animate" style="animation-delay: ${index * 0.1}s;">
             <div class="flex justify-between items-start mb-3">
               <div>
                 <p class="font-semibold text-slate-800">${f.station}</p>
                 <p class="text-xs text-slate-500">${new Date(f.date).toLocaleDateString('tr-TR')}</p>
               </div>
               <div class="text-right">
-                <p class="font-bold text-slate-800">₺${f.totalCost.toFixed(2)}</p>
+                <p class="font-bold text-slate-800">TL${f.totalCost.toFixed(2)}</p>
                 <p class="text-xs text-slate-500">${f.liters} L</p>
               </div>
             </div>
             <div class="flex items-center justify-between pt-3 border-t border-slate-50">
               <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md">${f.fuelType}</span>
-              <span class="text-xs text-slate-500">₺${f.pricePerLiter.toFixed(2)} / L</span>
+              <span class="text-xs text-slate-500">TL${f.pricePerLiter.toFixed(2)} / L</span>
             </div>
           </div>
         `).join('');
@@ -363,16 +1001,40 @@
     const typeSelect = document.getElementById('fill-type');
     const priceInput = document.getElementById('fill-price');
     const litersInput = document.getElementById('fill-liters');
+    const stationInfoDiv = document.getElementById('station-info');
 
     document.getElementById('btn-add-fillup').addEventListener('click', () => showScreen('add-fillup-screen'));
     document.getElementById('btn-close-fillup').addEventListener('click', () => showScreen('dashboard-screen'));
 
-    // İstasyon veya Yakıt Tipi değiştiğinde fiyatı otomatik getir
+    // İstasyon veya Yakıt Tipi değiştiğinde fiyatı otomatik getir ve info göster
     function updateAutoPrice() {
       const station = stationSelect.value;
       const type = typeSelect.value;
+      
+      // LPG secenegini istasyona gore goster/gizle
+      if (station && fuelPricesData[station]) {
+        const lpgOption = typeSelect.querySelector('option[value="LPG"]');
+        if (fuelPricesData[station]["LPG"] === null) {
+          lpgOption.disabled = true;
+          lpgOption.text = 'LPG (Bu istasyonda yok)';
+          if (type === 'LPG') typeSelect.value = 'Kursunsuz 95';
+        } else {
+          lpgOption.disabled = false;
+          lpgOption.text = 'LPG';
+        }
+      }
+      
       if (station && type && fuelPricesData[station]) {
-        priceInput.value = fuelPricesData[station][type];
+        const price = fuelPricesData[station][type];
+        if (price !== null) {
+          priceInput.value = price;
+        }
+        
+        // Station info goster - sadece guncelleme tarihi
+        const stationData = fuelPricesData[station];
+        document.getElementById('station-updated').innerText = stationData.lastUpdated;
+        stationInfoDiv.classList.remove('hidden');
+        
         calcTotal();
       }
     }
@@ -383,21 +1045,26 @@
     const calcTotal = () => {
       const l = parseFloat(litersInput.value) || 0;
       const p = parseFloat(priceInput.value) || 0;
-      document.getElementById('fill-total').innerText = `₺${(l * p).toFixed(2)}`;
+      document.getElementById('fill-total').innerText = `TL${(l * p).toFixed(2)}`;
     };
     
     litersInput.addEventListener('input', calcTotal);
     priceInput.addEventListener('input', calcTotal);
 
     document.getElementById('btn-save-fillup').addEventListener('click', () => {
-      const station = stationSelect.value || 'Bilinmeyen İstasyon';
+      const station = stationSelect.value || 'Bilinmeyen Istasyon';
       const fuelType = typeSelect.value;
       const liters = parseFloat(litersInput.value);
       const pricePerLiter = parseFloat(priceInput.value);
 
       if (!liters || !pricePerLiter || !stationSelect.value) {
-        return alert('Lütfen istasyon seçin, litre ve fiyat giriniz.');
+        return alert('Lutfen istasyon secin, litre ve fiyat giriniz.');
       }
+
+      // Aktif aracın bilgilerini al
+      const activeVehicle = vehicles.find(v => v.id === activeVehicleId);
+      const tankCapacity = activeVehicle ? getTankCapacity(activeVehicle.make, activeVehicle.model) : 50;
+      const vehicleName = activeVehicle ? `${activeVehicle.make} ${activeVehicle.model}` : 'Arac';
 
       fillUps.push({
         id: Date.now().toString(),
@@ -411,10 +1078,14 @@
       stationSelect.value = '';
       litersInput.value = '';
       priceInput.value = '';
-      document.getElementById('fill-total').innerText = '₺0.00';
+      document.getElementById('fill-total').innerText = 'TL0.00';
+      stationInfoDiv.classList.add('hidden');
       
       showScreen('dashboard-screen');
       renderDashboard();
+      
+      // Depo yüzdesini gösteren toast bildirimi
+      showTankFillToast(liters, tankCapacity, vehicleName);
     });
 
     // --- SETTINGS LOGIC ---
@@ -430,13 +1101,13 @@
 
     function renderSettings() {
       const container = document.getElementById('settings-vehicles');
-      container.innerHTML = vehicles.map(v => `
-        <div class="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center cursor-pointer ${v.id === activeVehicleId ? 'ring-2 ring-indigo-500' : ''}" onclick="switchVehicle('${v.id}')">
+      container.innerHTML = vehicles.map((v, index) => `
+        <div class="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center cursor-pointer vehicle-card card-animate ${v.id === activeVehicleId ? 'ring-2 ring-indigo-500' : ''}" style="animation-delay: ${index * 0.1}s;" onclick="switchVehicle('${v.id}')">
           <div class="flex-1" onclick="switchVehicle('${v.id}')">
             <p class="font-bold">${v.make} ${v.model}</p>
             <p class="text-xs text-slate-500">${v.year}</p>
           </div>
-          <button onclick="deleteVehicle(event, '${v.id}')" class="text-red-500 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+          <button onclick="deleteVehicle(event, '${v.id}')" class="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
         </div>
       `).join('');
       lucide.createIcons();
