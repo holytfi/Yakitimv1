@@ -1,13 +1,357 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yakıtım</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .screen { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 antialiased">
+  <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative overflow-hidden">
+    
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-indigo-600 text-white">
+      <i data-lucide="car" class="w-16 h-16 mb-4"></i>
+      <h1 class="text-4xl font-bold">Yakıtım</h1>
+      <p class="text-indigo-200 mt-2">Akıllı Yakıt Takip Asistanı</p>
+    </div>
 
+    <!-- Onboarding Screen -->
+    <div id="onboarding-screen" class="screen hidden absolute inset-0 z-40 bg-white flex flex-col">
+      <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div id="onb-icon" class="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center mb-8 text-indigo-500"></div>
+        <h2 id="onb-title" class="text-2xl font-bold text-slate-800 mb-4"></h2>
+        <p id="onb-desc" class="text-slate-500 leading-relaxed"></p>
+      </div>
+      <div class="p-8 pb-12">
+        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200">İleri</button>
+      </div>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="screen hidden absolute inset-0 z-30 bg-white p-6 flex flex-col">
+      <h2 class="text-2xl font-bold mb-2 mt-8">Araç Ekle</h2>
+      <p class="text-slate-500 mb-8">Yakıt takibi yapmak için aracınızı ekleyin.</p>
+      <input id="setup-make" placeholder="Marka (örn: Fiat)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+      <input id="setup-model" placeholder="Model (örn: Egea)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+      <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none">
+      <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="screen hidden flex flex-col min-h-screen pb-24 bg-slate-50">
+      <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-3xl shadow-md">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Araç</p>
+            <h1 id="dash-vehicle" class="text-2xl font-bold flex items-center gap-2"></h1>
+          </div>
+          <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full"><i data-lucide="settings" class="w-5 h-5"></i></button>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white/10 p-4 rounded-2xl">
+            <p class="text-indigo-200 text-xs mb-1">Toplam Harcama</p>
+            <p id="dash-spent" class="text-xl font-bold"></p>
+          </div>
+          <div class="bg-white/10 p-4 rounded-2xl">
+            <p class="text-indigo-200 text-xs mb-1">Toplam Yakıt</p>
+            <p id="dash-liters" class="text-xl font-bold"></p>
+          </div>
+          <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center">
+            <div>
+              <p class="text-indigo-200 text-xs mb-1">Güncel Kilometre</p>
+              <p id="dash-mileage" class="text-xl font-bold"></p>
+            </div>
+            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium">Güncelle</button>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 flex-1">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1">Son Alımlar</h2>
+        <div id="dash-fillups" class="space-y-3"></div>
+      </div>
+      <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700">
+        <i data-lucide="plus"></i>
+      </button>
+    </div>
+
+    <!-- Add FillUp Screen -->
+    <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col">
+      <div class="flex justify-between items-center mb-6 mt-4">
+        <h2 class="text-xl font-bold">Yakıt Alımı Ekle</h2>
+        <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <input id="fill-station" placeholder="İstasyon (örn: Shell)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500">
+      <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
+        <option value="Kurşunsuz 95">Kurşunsuz 95</option>
+        <option value="Motorin">Motorin</option>
+        <option value="LPG">LPG</option>
+      </select>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <input id="fill-liters" type="number" step="0.01" placeholder="Litre" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
+        <input id="fill-price" type="number" step="0.01" placeholder="Birim Fiyat" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
+      </div>
+      <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100">
+        <span class="font-medium text-slate-600">Toplam Tutar:</span>
+        <span id="fill-total" class="text-2xl font-bold text-indigo-600">₺0.00</span>
+      </div>
+      <button id="btn-save-fillup" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen hidden absolute inset-0 bg-slate-50 z-50 flex flex-col">
+      <div class="bg-white p-6 pt-10 flex justify-between items-center border-b border-slate-100">
+        <h2 class="text-xl font-bold">Ayarlar</h2>
+        <button id="btn-close-settings" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="p-6 space-y-6 flex-1 overflow-y-auto">
+        <div>
+          <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayıtlı Araçlar</h3>
+          <div id="settings-vehicles" class="space-y-2 mb-4"></div>
+          <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i> Yeni Araç Ekle
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State
+    let vehicles = JSON.parse(localStorage.getItem('yakit_takip_vehicles')) || [];
+    let activeVehicleId = localStorage.getItem('yakit_takip_active_vehicle_id') || (vehicles.length > 0 ? vehicles[0].id : null);
+    let fillUps = JSON.parse(localStorage.getItem('yakit_takip_fillups')) || [];
+    let onboardingComplete = localStorage.getItem('yakit_takip_onboarding_complete') === 'true';
+
+    // DOM Elements
+    const screens = document.querySelectorAll('.screen');
+    const showScreen = (id) => {
+      screens.forEach(s => s.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+      lucide.createIcons();
+    };
+
+    // Init
+    setTimeout(() => {
+      if (!onboardingComplete) {
+        showScreen('onboarding-screen');
+        renderOnboarding();
+      } else if (vehicles.length === 0) {
+        showScreen('setup-screen');
+      } else {
+        showScreen('dashboard-screen');
+        renderDashboard();
+      }
+    }, 2500);
+
+    // Onboarding Logic
+    const onbSteps = [
+      { title: "Yakıtım'a Hoş Geldiniz", desc: "Araçlarınızın yakıt tüketimini ve masraflarını akıllıca takip edin.", icon: "droplet" },
+      { title: "Birden Fazla Araç", desc: "Tüm araçlarınızı tek bir yerden yönetin.", icon: "car" },
+      { title: "Kilometre Takibi", desc: "Aracınızın güncel kilometresini kaydedin.", icon: "trending-down" }
+    ];
+    let currentOnbStep = 0;
+    
+    function renderOnboarding() {
+      const step = onbSteps[currentOnbStep];
+      document.getElementById('onb-title').innerText = step.title;
+      document.getElementById('onb-desc').innerText = step.desc;
+      document.getElementById('onb-icon').innerHTML = `<i data-lucide="${step.icon}" class="w-16 h-16"></i>`;
+      document.getElementById('btn-onb-next').innerText = currentOnbStep === onbSteps.length - 1 ? "Başla" : "İleri";
+      lucide.createIcons();
+    }
+
+    document.getElementById('btn-onb-next').addEventListener('click', () => {
+      if (currentOnbStep < onbSteps.length - 1) {
+        currentOnbStep++;
+        renderOnboarding();
+      } else {
+        localStorage.setItem('yakit_takip_onboarding_complete', 'true');
+        showScreen(vehicles.length === 0 ? 'setup-screen' : 'dashboard-screen');
+        if(vehicles.length > 0) renderDashboard();
+      }
+    });
+
+    // Setup Logic
+    document.getElementById('btn-setup-save').addEventListener('click', () => {
+      const make = document.getElementById('setup-make').value.trim();
+      const model = document.getElementById('setup-model').value.trim();
+      const year = document.getElementById('setup-year').value.trim();
+      
+      if (!make || !model) return alert('Lütfen marka ve model giriniz.');
+      
+      const newVehicle = { id: Date.now().toString(), make, model, year: parseInt(year) || new Date().getFullYear(), mileage: 0 };
+      vehicles.push(newVehicle);
+      activeVehicleId = newVehicle.id;
+      saveData();
+      
+      document.getElementById('setup-make').value = '';
+      document.getElementById('setup-model').value = '';
+      document.getElementById('setup-year').value = '';
+      
+      showScreen('dashboard-screen');
+      renderDashboard();
+    });
+
+    // Dashboard Logic
+    function renderDashboard() {
+      const activeVehicle = vehicles.find(v => v.id === activeVehicleId);
+      if (!activeVehicle) return showScreen('setup-screen');
+
+      document.getElementById('dash-vehicle').innerHTML = `<i data-lucide="car" class="w-6 h-6"></i> ${activeVehicle.make} ${activeVehicle.model}`;
+      document.getElementById('dash-mileage').innerText = activeVehicle.mileage ? `${activeVehicle.mileage.toLocaleString('tr-TR')} km` : 'Belirtilmedi';
+
+      const activeFillUps = fillUps.filter(f => f.vehicleId === activeVehicleId).reverse();
+      const totalSpent = activeFillUps.reduce((sum, f) => sum + f.totalCost, 0);
+      const totalLiters = activeFillUps.reduce((sum, f) => sum + f.liters, 0);
+
+      document.getElementById('dash-spent').innerText = `₺${totalSpent.toFixed(2)}`;
+      document.getElementById('dash-liters').innerText = `${totalLiters.toFixed(2)} L`;
+
+      const fillupsContainer = document.getElementById('dash-fillups');
+      if (activeFillUps.length === 0) {
+        fillupsContainer.innerHTML = `
+          <div class="text-center py-12">
+            <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-500">
+              <i data-lucide="droplet" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-slate-700 font-medium">Henüz kayıt yok</h3>
+          </div>`;
+      } else {
+        fillupsContainer.innerHTML = activeFillUps.map(f => `
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="font-semibold text-slate-800">${f.station}</p>
+                <p class="text-xs text-slate-500">${new Date(f.date).toLocaleDateString('tr-TR')}</p>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-slate-800">₺${f.totalCost.toFixed(2)}</p>
+                <p class="text-xs text-slate-500">${f.liters} L</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-3 border-t border-slate-50">
+              <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md">${f.fuelType}</span>
+              <span class="text-xs text-slate-500">₺${f.pricePerLiter.toFixed(2)} / L</span>
+            </div>
+          </div>
+        `).join('');
+      }
+      lucide.createIcons();
+    }
+
+    document.getElementById('btn-edit-mileage').addEventListener('click', () => {
+      const activeVehicle = vehicles.find(v => v.id === activeVehicleId);
+      const newMileage = prompt('Güncel Kilometre:', activeVehicle.mileage || '');
+      if (newMileage !== null && !isNaN(parseInt(newMileage))) {
+        activeVehicle.mileage = parseInt(newMileage);
+        saveData();
+        renderDashboard();
+      }
+    });
+
+    // Add FillUp Logic
+    document.getElementById('btn-add-fillup').addEventListener('click', () => showScreen('add-fillup-screen'));
+    document.getElementById('btn-close-fillup').addEventListener('click', () => showScreen('dashboard-screen'));
+
+    const calcTotal = () => {
+      const l = parseFloat(document.getElementById('fill-liters').value) || 0;
+      const p = parseFloat(document.getElementById('fill-price').value) || 0;
+      document.getElementById('fill-total').innerText = `₺${(l * p).toFixed(2)}`;
+    };
+    document.getElementById('fill-liters').addEventListener('input', calcTotal);
+    document.getElementById('fill-price').addEventListener('input', calcTotal);
+
+    document.getElementById('btn-save-fillup').addEventListener('click', () => {
+      const station = document.getElementById('fill-station').value.trim() || 'Bilinmeyen İstasyon';
+      const fuelType = document.getElementById('fill-type').value;
+      const liters = parseFloat(document.getElementById('fill-liters').value);
+      const pricePerLiter = parseFloat(document.getElementById('fill-price').value);
+
+      if (!liters || !pricePerLiter) return alert('Lütfen litre ve fiyat giriniz.');
+
+      fillUps.push({
+        id: Date.now().toString(),
+        vehicleId: activeVehicleId,
+        date: new Date().toISOString(),
+        station, fuelType, liters, pricePerLiter,
+        totalCost: liters * pricePerLiter
+      });
+      saveData();
+      
+      document.getElementById('fill-station').value = '';
+      document.getElementById('fill-liters').value = '';
+      document.getElementById('fill-price').value = '';
+      document.getElementById('fill-total').innerText = '₺0.00';
+      
+      showScreen('dashboard-screen');
+      renderDashboard();
+    });
+
+    // Settings Logic
+    document.getElementById('btn-settings').addEventListener('click', () => {
+      renderSettings();
+      showScreen('settings-screen');
+    });
+    document.getElementById('btn-close-settings').addEventListener('click', () => showScreen('dashboard-screen'));
+    
+    document.getElementById('btn-settings-add-vehicle').addEventListener('click', () => {
+      showScreen('setup-screen');
+    });
+
+    function renderSettings() {
+      const container = document.getElementById('settings-vehicles');
+      container.innerHTML = vehicles.map(v => `
+        <div class="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center cursor-pointer ${v.id === activeVehicleId ? 'ring-2 ring-indigo-500' : ''}" onclick="switchVehicle('${v.id}')">
+          <div class="flex-1" onclick="switchVehicle('${v.id}')">
+            <p class="font-bold">${v.make} ${v.model}</p>
+            <p class="text-xs text-slate-500">${v.year}</p>
+          </div>
+          <button onclick="deleteVehicle(event, '${v.id}')" class="text-red-500 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    window.switchVehicle = (id) => {
+      activeVehicleId = id;
+      saveData();
+      renderSettings();
+    };
+
+    window.deleteVehicle = (e, id) => {
+      e.stopPropagation();
+      if(confirm('Bu aracı ve tüm yakıt geçmişini silmek istediğinize emin misiniz?')) {
+        vehicles = vehicles.filter(v => v.id !== id);
+        fillUps = fillUps.filter(f => f.vehicleId !== id);
+        if (activeVehicleId === id) {
+          activeVehicleId = vehicles.length > 0 ? vehicles[0].id : null;
+        }
+        saveData();
+        if (vehicles.length === 0) {
+          showScreen('setup-screen');
+        } else {
+          renderSettings();
+        }
+      }
+    };
+
+    function saveData() {
+      localStorage.setItem('yakit_takip_vehicles', JSON.stringify(vehicles));
+      localStorage.setItem('yakit_takip_active_vehicle_id', activeVehicleId);
+      localStorage.setItem('yakit_takip_fillups', JSON.stringify(fillUps));
+    }
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
