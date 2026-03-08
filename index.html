@@ -10,129 +10,438 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .hidden { display: none !important; }
-    .screen { animation: fadeIn 0.3s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Screen Transitions */
+    .screen { 
+      animation: screenSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+    }
+    
+    @keyframes screenSlideIn { 
+      from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.98);
+      } 
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+      } 
+    }
+    
+    /* Splash Screen Animations */
+    .splash-logo {
+      animation: splashPulse 2s ease-in-out infinite, splashFloat 3s ease-in-out infinite;
+    }
+    
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes splashFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .splash-title {
+      animation: splashTitleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+    }
+    
+    .splash-subtitle {
+      animation: splashTitleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+    }
+    
+    @keyframes splashTitleIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    .splash-bg-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes glowPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    
+    /* Splash Exit Animation */
+    .splash-exit {
+      animation: splashExit 0.6s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+    }
+    
+    @keyframes splashExit {
+      to { 
+        opacity: 0; 
+        transform: scale(1.1);
+      }
+    }
+    
+    /* Onboarding Animations */
+    .onb-icon-animate {
+      animation: onbIconIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes onbIconIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.5) rotate(-10deg);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) rotate(0deg);
+      }
+    }
+    
+    .onb-content-animate {
+      animation: onbContentIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    
+    @keyframes onbContentIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Card Animations */
+    .card-animate {
+      animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card-animate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1);
+    }
+    
+    .card-animate:active {
+      transform: scale(0.98);
+    }
+    
+    @keyframes cardSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Staggered Animation Delays */
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+    
+    /* Button Animations */
+    .btn-animate {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-animate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-animate:active {
+      transform: scale(0.97);
+    }
+    
+    /* FAB Button Animation */
+    .fab-animate {
+      animation: fabBounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s both;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .fab-animate:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.5);
+    }
+    
+    .fab-animate:active {
+      transform: scale(0.95);
+    }
+    
+    @keyframes fabBounceIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0) rotate(-180deg);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) rotate(0);
+      }
+    }
+    
+    /* Dashboard Header Animation */
+    .dash-header-animate {
+      animation: dashHeaderIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes dashHeaderIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Stat Card Animation */
+    .stat-card-animate {
+      animation: statCardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card-animate:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    @keyframes statCardIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1);
+      }
+    }
+    
+    /* Input Focus Animation */
+    select, input {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    select:focus, input:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Modal/Screen Overlay Animation */
+    .modal-animate {
+      animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes modalSlideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(100%);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    /* Empty State Animation */
+    .empty-state-animate {
+      animation: emptyStateIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+    
+    @keyframes emptyStateIn {
+      from { 
+        opacity: 0; 
+        transform: scale(0.9);
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1);
+      }
+    }
+    
+    /* Vehicle Card Hover */
+    .vehicle-card {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .vehicle-card:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    /* Number Counter Animation */
+    .number-animate {
+      animation: numberPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    @keyframes numberPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    
+    /* Close Button Animation */
+    .close-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .close-btn:hover {
+      transform: rotate(90deg);
+      background: #fee2e2;
+    }
+    
+    /* Loading Shimmer */
+    .shimmer {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased">
   <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative overflow-hidden">
     
     <!-- Splash Screen -->
-    <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-indigo-600 text-white">
-      <i data-lucide="car" class="w-16 h-16 mb-4"></i>
-      <h1 class="text-4xl font-bold">Yakıtım</h1>
-      <p class="text-indigo-200 mt-2">Akıllı Yakıt Takip Asistanı</p>
+    <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white overflow-hidden">
+      <div class="splash-bg-glow"></div>
+      <i data-lucide="car" class="w-20 h-20 mb-4 splash-logo"></i>
+      <h1 class="text-4xl font-bold splash-title">Yakitim</h1>
+      <p class="text-indigo-200 mt-2 splash-subtitle">Akilli Yakit Takip Asistani</p>
+      <div class="absolute bottom-8 flex gap-2">
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+        <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+      </div>
     </div>
 
     <!-- Onboarding Screen -->
     <div id="onboarding-screen" class="screen hidden absolute inset-0 z-40 bg-white flex flex-col">
       <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <div id="onb-icon" class="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center mb-8 text-indigo-500"></div>
-        <h2 id="onb-title" class="text-2xl font-bold text-slate-800 mb-4"></h2>
-        <p id="onb-desc" class="text-slate-500 leading-relaxed"></p>
+        <div id="onb-icon" class="w-32 h-32 rounded-full bg-indigo-100 flex items-center justify-center mb-8 text-indigo-500 onb-icon-animate"></div>
+        <h2 id="onb-title" class="text-2xl font-bold text-slate-800 mb-4 onb-content-animate"></h2>
+        <p id="onb-desc" class="text-slate-500 leading-relaxed onb-content-animate"></p>
       </div>
       <div class="p-8 pb-12">
-        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200">İleri</button>
+        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 btn-animate">Ileri</button>
       </div>
     </div>
 
     <!-- Setup Screen -->
     <div id="setup-screen" class="screen hidden absolute inset-0 z-30 bg-white p-6 flex flex-col">
-      <h2 class="text-2xl font-bold mb-2 mt-8">Araç Ekle</h2>
-      <p class="text-slate-500 mb-8">Yakıt takibi yapmak için aracınızı ekleyin.</p>
+      <h2 class="text-2xl font-bold mb-2 mt-8 card-animate stagger-1">Arac Ekle</h2>
+      <p class="text-slate-500 mb-8 card-animate stagger-2">Yakit takibi yapmak icin aracinizi ekleyin.</p>
       
       <!-- Araç Marka/Model Açılır Listeleri -->
-      <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
-        <option value="">Marka Seçiniz</option>
+      <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white card-animate stagger-3">
+        <option value="">Marka Seciniz</option>
       </select>
       
-      <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500">
-        <option value="">Önce Marka Seçiniz</option>
+      <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500 card-animate stagger-4">
+        <option value="">Once Marka Seciniz</option>
       </select>
       
-      <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none">
-      <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+      <input id="setup-year" type="number" placeholder="Yil (orn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none card-animate stagger-5">
+      <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6 btn-animate card-animate stagger-6">Kaydet</button>
     </div>
 
     <!-- Dashboard Screen -->
     <div id="dashboard-screen" class="screen hidden flex flex-col min-h-screen pb-24 bg-slate-50">
-      <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-3xl shadow-md">
+      <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 text-white p-6 pt-12 rounded-b-3xl shadow-lg dash-header-animate">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Araç</p>
+            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Arac</p>
             <h1 id="dash-vehicle" class="text-2xl font-bold flex items-center gap-2"></h1>
           </div>
-          <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full"><i data-lucide="settings" class="w-5 h-5"></i></button>
+          <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full btn-animate hover:rotate-90 transition-transform duration-300"><i data-lucide="settings" class="w-5 h-5"></i></button>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-white/10 p-4 rounded-2xl">
+          <div class="bg-white/10 p-4 rounded-2xl stat-card-animate stagger-1">
             <p class="text-indigo-200 text-xs mb-1">Toplam Harcama</p>
             <p id="dash-spent" class="text-xl font-bold"></p>
           </div>
-          <div class="bg-white/10 p-4 rounded-2xl">
-            <p class="text-indigo-200 text-xs mb-1">Toplam Yakıt</p>
+          <div class="bg-white/10 p-4 rounded-2xl stat-card-animate stagger-2">
+            <p class="text-indigo-200 text-xs mb-1">Toplam Yakit</p>
             <p id="dash-liters" class="text-xl font-bold"></p>
           </div>
-          <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center">
+          <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center stat-card-animate stagger-3">
             <div>
-              <p class="text-indigo-200 text-xs mb-1">Güncel Kilometre</p>
+              <p class="text-indigo-200 text-xs mb-1">Guncel Kilometre</p>
               <p id="dash-mileage" class="text-xl font-bold"></p>
             </div>
-            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium">Güncelle</button>
+            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium btn-animate">Guncelle</button>
           </div>
         </div>
       </div>
       <div class="p-4 flex-1">
-        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1">Son Alımlar</h2>
+        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1 card-animate">Son Alimlar</h2>
         <div id="dash-fillups" class="space-y-3"></div>
       </div>
-      <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-indigo-700">
+      <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center fab-animate">
         <i data-lucide="plus"></i>
       </button>
     </div>
 
     <!-- Add FillUp Screen -->
-    <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col">
-      <div class="flex justify-between items-center mb-6 mt-4">
-        <h2 class="text-xl font-bold">Yakıt Alımı Ekle</h2>
-        <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col modal-animate">
+      <div class="flex justify-between items-center mb-6 mt-4 card-animate stagger-1">
+        <h2 class="text-xl font-bold">Yakit Alimi Ekle</h2>
+        <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full close-btn"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       
       <!-- İstasyon Açılır Listesi (Fetch ile dolacak) -->
-      <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
-        <option value="">İstasyon Seçiniz (Yükleniyor...)</option>
+      <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-2">
+        <option value="">Istasyon Seciniz (Yukleniyor...)</option>
       </select>
       
-      <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
-        <option value="Kurşunsuz 95">Kurşunsuz 95</option>
+      <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-3">
+        <option value="Kursunsuz 95">Kursunsuz 95</option>
         <option value="Motorin">Motorin</option>
         <option value="LPG">LPG</option>
       </select>
       
-      <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="grid grid-cols-2 gap-4 mb-4 card-animate stagger-4">
         <input id="fill-liters" type="number" step="0.01" placeholder="Litre" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
         <input id="fill-price" type="number" step="0.01" placeholder="Birim Fiyat" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500 bg-slate-50">
       </div>
       
-      <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100">
+      <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100 card-animate stagger-5">
         <span class="font-medium text-slate-600">Toplam Tutar:</span>
-        <span id="fill-total" class="text-2xl font-bold text-indigo-600">₺0.00</span>
+        <span id="fill-total" class="text-2xl font-bold text-indigo-600">TL0.00</span>
       </div>
-      <button id="btn-save-fillup" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
+      <button id="btn-save-fillup" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6 btn-animate card-animate stagger-6">Kaydet</button>
     </div>
 
     <!-- Settings Screen -->
-    <div id="settings-screen" class="screen hidden absolute inset-0 bg-slate-50 z-50 flex flex-col">
-      <div class="bg-white p-6 pt-10 flex justify-between items-center border-b border-slate-100">
+    <div id="settings-screen" class="screen hidden absolute inset-0 bg-slate-50 z-50 flex flex-col modal-animate">
+      <div class="bg-white p-6 pt-10 flex justify-between items-center border-b border-slate-100 card-animate">
         <h2 class="text-xl font-bold">Ayarlar</h2>
-        <button id="btn-close-settings" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button id="btn-close-settings" class="p-2 bg-slate-100 rounded-full close-btn"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="p-6 space-y-6 flex-1 overflow-y-auto">
-        <div>
-          <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayıtlı Araçlar</h3>
+        <div class="card-animate stagger-1">
+          <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayitli Araclar</h3>
           <div id="settings-vehicles" class="space-y-2 mb-4"></div>
-          <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2">
-            <i data-lucide="plus" class="w-4 h-4"></i> Yeni Araç Ekle
+          <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2 btn-animate hover:border-indigo-400 hover:text-indigo-500 transition-colors">
+            <i data-lucide="plus" class="w-4 h-4"></i> Yeni Arac Ekle
           </button>
         </div>
       </div>
@@ -256,33 +565,55 @@
       }
     });
 
+    // Splash screen exit animation
     setTimeout(() => {
-      if (!onboardingComplete) {
-        showScreen('onboarding-screen');
-        renderOnboarding();
-      } else if (vehicles.length === 0) {
-        showScreen('setup-screen');
-      } else {
-        showScreen('dashboard-screen');
-        renderDashboard();
-      }
+      const splashScreen = document.getElementById('splash-screen');
+      splashScreen.classList.add('splash-exit');
+      
+      setTimeout(() => {
+        if (!onboardingComplete) {
+          showScreen('onboarding-screen');
+          renderOnboarding();
+        } else if (vehicles.length === 0) {
+          showScreen('setup-screen');
+        } else {
+          showScreen('dashboard-screen');
+          renderDashboard();
+        }
+      }, 500); // Wait for exit animation to complete
     }, 2500);
 
     // --- ONBOARDING LOGIC ---
     const onbSteps = [
-      { title: "Yakıtım'a Hoş Geldiniz", desc: "Araçlarınızın yakıt tüketimini ve masraflarını akıllıca takip edin.", icon: "droplet" },
-      { title: "Birden Fazla Araç", desc: "Tüm araçlarınızı tek bir yerden yönetin.", icon: "car" },
-      { title: "Otomatik Fiyatlar", desc: "İnternetten çekilen güncel fiyatlarla otomatik hesaplama yapın.", icon: "zap" },
-      { title: "Kilometre Takibi", desc: "Aracınızın güncel kilometresini kaydedin.", icon: "trending-down" }
+      { title: "Yakitim'a Hos Geldiniz", desc: "Araclarinizin yakit tuketimini ve masraflarini akillica takip edin.", icon: "droplet" },
+      { title: "Birden Fazla Arac", desc: "Tum araclarinizi tek bir yerden yonetin.", icon: "car" },
+      { title: "Otomatik Fiyatlar", desc: "Internetten cekilen guncel fiyatlarla otomatik hesaplama yapin.", icon: "zap" },
+      { title: "Kilometre Takibi", desc: "Aracinizin guncel kilometresini kaydedin.", icon: "trending-down" }
     ];
     let currentOnbStep = 0;
     
     function renderOnboarding() {
       const step = onbSteps[currentOnbStep];
-      document.getElementById('onb-title').innerText = step.title;
-      document.getElementById('onb-desc').innerText = step.desc;
-      document.getElementById('onb-icon').innerHTML = `<i data-lucide="${step.icon}" class="w-16 h-16"></i>`;
-      document.getElementById('btn-onb-next').innerText = currentOnbStep === onbSteps.length - 1 ? "Başla" : "İleri";
+      const iconEl = document.getElementById('onb-icon');
+      const titleEl = document.getElementById('onb-title');
+      const descEl = document.getElementById('onb-desc');
+      
+      // Re-trigger animations by removing and re-adding classes
+      iconEl.classList.remove('onb-icon-animate');
+      titleEl.classList.remove('onb-content-animate');
+      descEl.classList.remove('onb-content-animate');
+      
+      // Force reflow
+      void iconEl.offsetWidth;
+      
+      iconEl.classList.add('onb-icon-animate');
+      titleEl.classList.add('onb-content-animate');
+      descEl.classList.add('onb-content-animate');
+      
+      titleEl.innerText = step.title;
+      descEl.innerText = step.desc;
+      iconEl.innerHTML = `<i data-lucide="${step.icon}" class="w-16 h-16"></i>`;
+      document.getElementById('btn-onb-next').innerText = currentOnbStep === onbSteps.length - 1 ? "Basla" : "Ileri";
       lucide.createIcons();
     }
 
@@ -331,34 +662,34 @@
       const totalSpent = activeFillUps.reduce((sum, f) => sum + f.totalCost, 0);
       const totalLiters = activeFillUps.reduce((sum, f) => sum + f.liters, 0);
 
-      document.getElementById('dash-spent').innerText = `₺${totalSpent.toFixed(2)}`;
+      document.getElementById('dash-spent').innerText = `TL${totalSpent.toFixed(2)}`;
       document.getElementById('dash-liters').innerText = `${totalLiters.toFixed(2)} L`;
 
       const fillupsContainer = document.getElementById('dash-fillups');
       if (activeFillUps.length === 0) {
         fillupsContainer.innerHTML = `
-          <div class="text-center py-12">
+          <div class="text-center py-12 empty-state-animate">
             <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-500">
               <i data-lucide="droplet" class="w-8 h-8"></i>
             </div>
-            <h3 class="text-slate-700 font-medium">Henüz kayıt yok</h3>
+            <h3 class="text-slate-700 font-medium">Henuz kayit yok</h3>
           </div>`;
       } else {
-        fillupsContainer.innerHTML = activeFillUps.map(f => `
-          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+        fillupsContainer.innerHTML = activeFillUps.map((f, index) => `
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 card-animate" style="animation-delay: ${index * 0.1}s;">
             <div class="flex justify-between items-start mb-3">
               <div>
                 <p class="font-semibold text-slate-800">${f.station}</p>
                 <p class="text-xs text-slate-500">${new Date(f.date).toLocaleDateString('tr-TR')}</p>
               </div>
               <div class="text-right">
-                <p class="font-bold text-slate-800">₺${f.totalCost.toFixed(2)}</p>
+                <p class="font-bold text-slate-800">TL${f.totalCost.toFixed(2)}</p>
                 <p class="text-xs text-slate-500">${f.liters} L</p>
               </div>
             </div>
             <div class="flex items-center justify-between pt-3 border-t border-slate-50">
               <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-1 rounded-md">${f.fuelType}</span>
-              <span class="text-xs text-slate-500">₺${f.pricePerLiter.toFixed(2)} / L</span>
+              <span class="text-xs text-slate-500">TL${f.pricePerLiter.toFixed(2)} / L</span>
             </div>
           </div>
         `).join('');
@@ -401,7 +732,7 @@
     const calcTotal = () => {
       const l = parseFloat(litersInput.value) || 0;
       const p = parseFloat(priceInput.value) || 0;
-      document.getElementById('fill-total').innerText = `₺${(l * p).toFixed(2)}`;
+      document.getElementById('fill-total').innerText = `TL${(l * p).toFixed(2)}`;
     };
     
     litersInput.addEventListener('input', calcTotal);
@@ -429,7 +760,7 @@
       stationSelect.value = '';
       litersInput.value = '';
       priceInput.value = '';
-      document.getElementById('fill-total').innerText = '₺0.00';
+      document.getElementById('fill-total').innerText = 'TL0.00';
       
       showScreen('dashboard-screen');
       renderDashboard();
@@ -448,13 +779,13 @@
 
     function renderSettings() {
       const container = document.getElementById('settings-vehicles');
-      container.innerHTML = vehicles.map(v => `
-        <div class="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center cursor-pointer ${v.id === activeVehicleId ? 'ring-2 ring-indigo-500' : ''}" onclick="switchVehicle('${v.id}')">
+      container.innerHTML = vehicles.map((v, index) => `
+        <div class="bg-white border border-slate-200 p-4 rounded-xl flex justify-between items-center cursor-pointer vehicle-card card-animate ${v.id === activeVehicleId ? 'ring-2 ring-indigo-500' : ''}" style="animation-delay: ${index * 0.1}s;" onclick="switchVehicle('${v.id}')">
           <div class="flex-1" onclick="switchVehicle('${v.id}')">
             <p class="font-bold">${v.make} ${v.model}</p>
             <p class="text-xs text-slate-500">${v.year}</p>
           </div>
-          <button onclick="deleteVehicle(event, '${v.id}')" class="text-red-500 p-2"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+          <button onclick="deleteVehicle(event, '${v.id}')" class="text-red-500 p-2 hover:bg-red-50 rounded-full transition-colors"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
         </div>
       `).join('');
       lucide.createIcons();
