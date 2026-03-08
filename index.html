@@ -40,8 +40,16 @@
     <div id="setup-screen" class="screen hidden absolute inset-0 z-30 bg-white p-6 flex flex-col">
       <h2 class="text-2xl font-bold mb-2 mt-8">Araç Ekle</h2>
       <p class="text-slate-500 mb-8">Yakıt takibi yapmak için aracınızı ekleyin.</p>
-      <input id="setup-make" placeholder="Marka (örn: Fiat)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
-      <input id="setup-model" placeholder="Model (örn: Egea)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+      
+      <!-- Araç Marka/Model Açılır Listeleri -->
+      <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+        <option value="">Marka Seçiniz</option>
+      </select>
+      
+      <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500">
+        <option value="">Önce Marka Seçiniz</option>
+      </select>
+      
       <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none">
       <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6">Kaydet</button>
     </div>
@@ -89,16 +97,23 @@
         <h2 class="text-xl font-bold">Yakıt Alımı Ekle</h2>
         <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <input id="fill-station" placeholder="İstasyon (örn: Shell)" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500">
+      
+      <!-- İstasyon Açılır Listesi (Fetch ile dolacak) -->
+      <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
+        <option value="">İstasyon Seçiniz (Yükleniyor...)</option>
+      </select>
+      
       <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white">
         <option value="Kurşunsuz 95">Kurşunsuz 95</option>
         <option value="Motorin">Motorin</option>
         <option value="LPG">LPG</option>
       </select>
+      
       <div class="grid grid-cols-2 gap-4 mb-4">
         <input id="fill-liters" type="number" step="0.01" placeholder="Litre" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
-        <input id="fill-price" type="number" step="0.01" placeholder="Birim Fiyat" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500">
+        <input id="fill-price" type="number" step="0.01" placeholder="Birim Fiyat" class="w-full border border-slate-200 p-4 rounded-xl outline-none focus:border-indigo-500 bg-slate-50">
       </div>
+      
       <div class="bg-slate-50 p-4 rounded-xl mb-6 flex justify-between items-center border border-slate-100">
         <span class="font-medium text-slate-600">Toplam Tutar:</span>
         <span id="fill-total" class="text-2xl font-bold text-indigo-600">₺0.00</span>
@@ -126,13 +141,26 @@
   </div>
 
   <script>
-    // State
+    // --- STATE ---
     let vehicles = JSON.parse(localStorage.getItem('yakit_takip_vehicles')) || [];
     let activeVehicleId = localStorage.getItem('yakit_takip_active_vehicle_id') || (vehicles.length > 0 ? vehicles[0].id : null);
     let fillUps = JSON.parse(localStorage.getItem('yakit_takip_fillups')) || [];
     let onboardingComplete = localStorage.getItem('yakit_takip_onboarding_complete') === 'true';
+    let fuelPricesData = {}; // Fetch ile dolacak
 
-    // DOM Elements
+    // --- ARAÇ VERİTABANI (Açılır liste için) ---
+    const carData = {
+      "Fiat": ["Egea", "Linea", "Fiorino", "Doblo", "Punto"],
+      "Renault": ["Clio", "Megane", "Symbol", "Fluence", "Taliant"],
+      "Ford": ["Focus", "Fiesta", "Courier", "Transit", "Puma"],
+      "Volkswagen": ["Golf", "Polo", "Passat", "Tiguan", "Caddy"],
+      "Toyota": ["Corolla", "Yaris", "Auris", "Hilux", "C-HR"],
+      "Honda": ["Civic", "City", "CR-V", "Accord", "Jazz"],
+      "Hyundai": ["i20", "Tucson", "Elantra", "Bayon", "Accent"],
+      "Dacia": ["Duster", "Sandero", "Logan", "Jogger"]
+    };
+
+    // --- DOM YARDIMCILARI ---
     const screens = document.querySelectorAll('.screen');
     const showScreen = (id) => {
       screens.forEach(s => s.classList.add('hidden'));
@@ -140,7 +168,76 @@
       lucide.createIcons();
     };
 
-    // Init
+    // --- FETCH: İNTERNETTEN FİYAT ÇEKME ---
+    async function fetchFuelPrices() {
+      try {
+        // Test amaçlı sahte API (jsonplaceholder) kullanımı
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        const users = await response.json();
+        
+        // Gelen veriyi istasyon ve fiyat formatına dönüştürüyoruz (Mock Data İşleme)
+        const basePrices = { "Kurşunsuz 95": 42.50, "Motorin": 43.10, "LPG": 21.00 };
+        
+        users.slice(0, 6).forEach((user, index) => {
+          // Şirket isimlerini istasyon ismi gibi kullanıyoruz
+          const stationName = user.company.name + " Petrol";
+          // Her istasyon için ufak fiyat farkları (randomize) ekliyoruz
+          fuelPricesData[stationName] = {
+            "Kurşunsuz 95": +(basePrices["Kurşunsuz 95"] + (index * 0.15)).toFixed(2),
+            "Motorin": +(basePrices["Motorin"] + (index * 0.12)).toFixed(2),
+            "LPG": +(basePrices["LPG"] + (index * 0.08)).toFixed(2)
+          };
+        });
+        
+        populateStations();
+      } catch (error) {
+        console.error("Fiyatlar çekilemedi:", error);
+        // Hata durumunda varsayılan veri
+        fuelPricesData = {
+          "Shell": { "Kurşunsuz 95": 42.50, "Motorin": 43.10, "LPG": 21.00 },
+          "Opet": { "Kurşunsuz 95": 42.45, "Motorin": 43.05, "LPG": 20.90 },
+          "Petrol Ofisi": { "Kurşunsuz 95": 42.40, "Motorin": 43.00, "LPG": 20.85 }
+        };
+        populateStations();
+      }
+    }
+
+    function populateStations() {
+      const stationSelect = document.getElementById('fill-station');
+      stationSelect.innerHTML = '<option value="">İstasyon Seçiniz</option>';
+      Object.keys(fuelPricesData).forEach(station => {
+        stationSelect.add(new Option(station, station));
+      });
+    }
+
+    // --- INIT (Uygulama Başlangıcı) ---
+    fetchFuelPrices(); // Uygulama açılırken veriyi çek
+    
+    // Araç Marka listesini doldur
+    const makeSelect = document.getElementById('setup-make');
+    const modelSelect = document.getElementById('setup-model');
+    Object.keys(carData).forEach(make => {
+      makeSelect.add(new Option(make, make));
+    });
+
+    makeSelect.addEventListener('change', (e) => {
+      const make = e.target.value;
+      modelSelect.innerHTML = '<option value="">Model Seçiniz</option>';
+      if (make && carData[make]) {
+        modelSelect.disabled = false;
+        modelSelect.classList.remove('bg-slate-50', 'text-slate-500');
+        modelSelect.classList.add('bg-white');
+        carData[make].forEach(model => {
+          modelSelect.add(new Option(model, model));
+        });
+      } else {
+        modelSelect.disabled = true;
+        modelSelect.classList.add('bg-slate-50', 'text-slate-500');
+        modelSelect.classList.remove('bg-white');
+        modelSelect.innerHTML = '<option value="">Önce Marka Seçiniz</option>';
+      }
+    });
+
     setTimeout(() => {
       if (!onboardingComplete) {
         showScreen('onboarding-screen');
@@ -153,10 +250,11 @@
       }
     }, 2500);
 
-    // Onboarding Logic
+    // --- ONBOARDING LOGIC ---
     const onbSteps = [
       { title: "Yakıtım'a Hoş Geldiniz", desc: "Araçlarınızın yakıt tüketimini ve masraflarını akıllıca takip edin.", icon: "droplet" },
       { title: "Birden Fazla Araç", desc: "Tüm araçlarınızı tek bir yerden yönetin.", icon: "car" },
+      { title: "Otomatik Fiyatlar", desc: "İnternetten çekilen güncel fiyatlarla otomatik hesaplama yapın.", icon: "zap" },
       { title: "Kilometre Takibi", desc: "Aracınızın güncel kilometresini kaydedin.", icon: "trending-down" }
     ];
     let currentOnbStep = 0;
@@ -181,13 +279,13 @@
       }
     });
 
-    // Setup Logic
+    // --- SETUP LOGIC ---
     document.getElementById('btn-setup-save').addEventListener('click', () => {
-      const make = document.getElementById('setup-make').value.trim();
-      const model = document.getElementById('setup-model').value.trim();
+      const make = document.getElementById('setup-make').value;
+      const model = document.getElementById('setup-model').value;
       const year = document.getElementById('setup-year').value.trim();
       
-      if (!make || !model) return alert('Lütfen marka ve model giriniz.');
+      if (!make || !model) return alert('Lütfen marka ve model seçiniz.');
       
       const newVehicle = { id: Date.now().toString(), make, model, year: parseInt(year) || new Date().getFullYear(), mileage: 0 };
       vehicles.push(newVehicle);
@@ -195,14 +293,15 @@
       saveData();
       
       document.getElementById('setup-make').value = '';
-      document.getElementById('setup-model').value = '';
+      document.getElementById('setup-model').innerHTML = '<option value="">Önce Marka Seçiniz</option>';
+      document.getElementById('setup-model').disabled = true;
       document.getElementById('setup-year').value = '';
       
       showScreen('dashboard-screen');
       renderDashboard();
     });
 
-    // Dashboard Logic
+    // --- DASHBOARD LOGIC ---
     function renderDashboard() {
       const activeVehicle = vehicles.find(v => v.id === activeVehicleId);
       if (!activeVehicle) return showScreen('setup-screen');
@@ -259,25 +358,46 @@
       }
     });
 
-    // Add FillUp Logic
+    // --- ADD FILLUP LOGIC (Otomatik Fiyat Doldurma) ---
+    const stationSelect = document.getElementById('fill-station');
+    const typeSelect = document.getElementById('fill-type');
+    const priceInput = document.getElementById('fill-price');
+    const litersInput = document.getElementById('fill-liters');
+
     document.getElementById('btn-add-fillup').addEventListener('click', () => showScreen('add-fillup-screen'));
     document.getElementById('btn-close-fillup').addEventListener('click', () => showScreen('dashboard-screen'));
 
+    // İstasyon veya Yakıt Tipi değiştiğinde fiyatı otomatik getir
+    function updateAutoPrice() {
+      const station = stationSelect.value;
+      const type = typeSelect.value;
+      if (station && type && fuelPricesData[station]) {
+        priceInput.value = fuelPricesData[station][type];
+        calcTotal();
+      }
+    }
+
+    stationSelect.addEventListener('change', updateAutoPrice);
+    typeSelect.addEventListener('change', updateAutoPrice);
+
     const calcTotal = () => {
-      const l = parseFloat(document.getElementById('fill-liters').value) || 0;
-      const p = parseFloat(document.getElementById('fill-price').value) || 0;
+      const l = parseFloat(litersInput.value) || 0;
+      const p = parseFloat(priceInput.value) || 0;
       document.getElementById('fill-total').innerText = `₺${(l * p).toFixed(2)}`;
     };
-    document.getElementById('fill-liters').addEventListener('input', calcTotal);
-    document.getElementById('fill-price').addEventListener('input', calcTotal);
+    
+    litersInput.addEventListener('input', calcTotal);
+    priceInput.addEventListener('input', calcTotal);
 
     document.getElementById('btn-save-fillup').addEventListener('click', () => {
-      const station = document.getElementById('fill-station').value.trim() || 'Bilinmeyen İstasyon';
-      const fuelType = document.getElementById('fill-type').value;
-      const liters = parseFloat(document.getElementById('fill-liters').value);
-      const pricePerLiter = parseFloat(document.getElementById('fill-price').value);
+      const station = stationSelect.value || 'Bilinmeyen İstasyon';
+      const fuelType = typeSelect.value;
+      const liters = parseFloat(litersInput.value);
+      const pricePerLiter = parseFloat(priceInput.value);
 
-      if (!liters || !pricePerLiter) return alert('Lütfen litre ve fiyat giriniz.');
+      if (!liters || !pricePerLiter || !stationSelect.value) {
+        return alert('Lütfen istasyon seçin, litre ve fiyat giriniz.');
+      }
 
       fillUps.push({
         id: Date.now().toString(),
@@ -288,16 +408,16 @@
       });
       saveData();
       
-      document.getElementById('fill-station').value = '';
-      document.getElementById('fill-liters').value = '';
-      document.getElementById('fill-price').value = '';
+      stationSelect.value = '';
+      litersInput.value = '';
+      priceInput.value = '';
       document.getElementById('fill-total').innerText = '₺0.00';
       
       showScreen('dashboard-screen');
       renderDashboard();
     });
 
-    // Settings Logic
+    // --- SETTINGS LOGIC ---
     document.getElementById('btn-settings').addEventListener('click', () => {
       renderSettings();
       showScreen('settings-screen');
