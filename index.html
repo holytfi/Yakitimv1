@@ -411,8 +411,8 @@
     <div id="splash-screen" class="screen absolute inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white overflow-hidden">
       <div class="splash-bg-glow"></div>
       <i data-lucide="car" class="w-20 h-20 mb-4 splash-logo"></i>
-      <h1 class="text-4xl font-bold splash-title">Yakitim</h1>
-      <p class="text-indigo-200 mt-2 splash-subtitle">Akilli Yakit Takip Asistani</p>
+      <h1 class="text-4xl font-bold splash-title">Yakıtım</h1>
+      <p class="text-indigo-200 mt-2 splash-subtitle">Akıllı Yakıt Takip Asistanı</p>
       <div class="absolute bottom-8 flex gap-2">
         <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
         <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
@@ -428,25 +428,25 @@
         <p id="onb-desc" class="text-slate-500 leading-relaxed onb-content-animate"></p>
       </div>
       <div class="p-8 pb-12">
-        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 btn-animate">Ileri</button>
+        <button id="btn-onb-next" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 btn-animate">İleri</button>
       </div>
     </div>
 
     <!-- Setup Screen -->
     <div id="setup-screen" class="screen hidden absolute inset-0 z-30 bg-white p-6 flex flex-col">
-      <h2 class="text-2xl font-bold mb-2 mt-8 card-animate stagger-1">Arac Ekle</h2>
-      <p class="text-slate-500 mb-8 card-animate stagger-2">Yakit takibi yapmak icin aracinizi ekleyin.</p>
+      <h2 class="text-2xl font-bold mb-2 mt-8 card-animate stagger-1">Araç Ekle</h2>
+      <p class="text-slate-500 mb-8 card-animate stagger-2">Yakıt takibi yapmak için aracınızı ekleyin.</p>
       
       <!-- Araç Marka/Model Açılır Listeleri -->
       <select id="setup-make" class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-white card-animate stagger-3">
-        <option value="">Marka Seciniz</option>
+        <option value="">Marka Seçiniz</option>
       </select>
       
       <select id="setup-model" disabled class="w-full border border-slate-200 p-4 rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none bg-slate-50 text-slate-500 card-animate stagger-4">
-        <option value="">Once Marka Seciniz</option>
+        <option value="">Önce Marka Seçiniz</option>
       </select>
       
-      <input id="setup-year" type="number" placeholder="Yil (orn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none card-animate stagger-5">
+      <input id="setup-year" type="number" placeholder="Yıl (örn: 2023)" class="w-full border border-slate-200 p-4 rounded-xl mb-6 focus:ring-2 focus:ring-indigo-500 outline-none card-animate stagger-5">
       <button id="btn-setup-save" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold mt-auto mb-6 btn-animate card-animate stagger-6">Kaydet</button>
     </div>
 
@@ -455,7 +455,7 @@
       <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 text-white p-6 pt-12 rounded-b-3xl shadow-lg dash-header-animate">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Arac</p>
+            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider mb-1">Aktif Araç</p>
             <h1 id="dash-vehicle" class="text-2xl font-bold flex items-center gap-2"></h1>
           </div>
           <button id="btn-settings" class="p-3 bg-indigo-700/50 rounded-full btn-animate hover:rotate-90 transition-transform duration-300"><i data-lucide="settings" class="w-5 h-5"></i></button>
@@ -466,20 +466,20 @@
             <p id="dash-spent" class="text-xl font-bold"></p>
           </div>
           <div class="bg-white/10 p-4 rounded-2xl stat-card-animate stagger-2">
-            <p class="text-indigo-200 text-xs mb-1">Toplam Yakit</p>
+            <p class="text-indigo-200 text-xs mb-1">Toplam Yakıt</p>
             <p id="dash-liters" class="text-xl font-bold"></p>
           </div>
           <div class="col-span-2 bg-white/10 p-4 rounded-2xl flex justify-between items-center stat-card-animate stagger-3">
             <div>
-              <p class="text-indigo-200 text-xs mb-1">Guncel Kilometre</p>
+              <p class="text-indigo-200 text-xs mb-1">Güncel Kilometre</p>
               <p id="dash-mileage" class="text-xl font-bold"></p>
             </div>
-            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium btn-animate">Guncelle</button>
+            <button id="btn-edit-mileage" class="bg-indigo-700/50 px-4 py-2 rounded-xl text-sm font-medium btn-animate">Güncelle</button>
           </div>
         </div>
       </div>
       <div class="p-4 flex-1">
-        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1 card-animate">Son Alimlar</h2>
+        <h2 class="text-lg font-semibold text-slate-800 mb-4 px-1 card-animate">Son Alımlar</h2>
         <div id="dash-fillups" class="space-y-3"></div>
       </div>
       <button id="btn-add-fillup" class="fixed bottom-6 right-6 bg-indigo-600 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center fab-animate">
@@ -490,25 +490,25 @@
     <!-- Add FillUp Screen -->
     <div id="add-fillup-screen" class="screen hidden absolute inset-0 bg-white z-50 p-6 flex flex-col modal-animate">
       <div class="flex justify-between items-center mb-6 mt-4 card-animate stagger-1">
-        <h2 class="text-xl font-bold">Yakit Alimi Ekle</h2>
+        <h2 class="text-xl font-bold">Yakıt Alımı Ekle</h2>
         <button id="btn-close-fillup" class="p-2 bg-slate-100 rounded-full close-btn"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       
       <!-- İstasyon Açılır Listesi (Fetch ile dolacak) -->
       <select id="fill-station" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-2">
-        <option value="">Istasyon Seciniz (Yukleniyor...)</option>
+        <option value="">İstasyon Seçiniz (Yükleniyor...)</option>
       </select>
       
       <!-- Station Info Display -->
       <div id="station-info" class="hidden bg-indigo-50 px-4 py-3 rounded-xl mb-4 border border-indigo-100 card-animate stagger-2b">
         <div class="flex items-center justify-between">
-          <p class="text-xs text-indigo-600 font-medium">Son guncelleme:</p>
+          <p class="text-xs text-indigo-600 font-medium">Son güncelleme:</p>
           <p id="station-updated" class="text-xs text-slate-500"></p>
         </div>
       </div>
       
       <select id="fill-type" class="w-full border border-slate-200 p-4 rounded-xl mb-4 outline-none focus:border-indigo-500 bg-white card-animate stagger-3">
-        <option value="Kursunsuz 95">Kursunsuz 95</option>
+        <option value="Kurşunsuz 95">Kurşunsuz 95</option>
         <option value="Motorin">Motorin</option>
         <option value="LPG">LPG</option>
       </select>
@@ -533,10 +533,10 @@
       </div>
       <div class="p-6 space-y-6 flex-1 overflow-y-auto">
         <div class="card-animate stagger-1">
-          <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayitli Araclar</h3>
+          <h3 class="font-semibold mb-3 text-slate-500 uppercase text-xs tracking-wider">Kayıtlı Araçlar</h3>
           <div id="settings-vehicles" class="space-y-2 mb-4"></div>
           <button id="btn-settings-add-vehicle" class="w-full border-2 border-dashed border-slate-300 text-slate-500 py-3 rounded-xl font-medium flex items-center justify-center gap-2 btn-animate hover:border-indigo-400 hover:text-indigo-500 transition-colors">
-            <i data-lucide="plus" class="w-4 h-4"></i> Yeni Arac Ekle
+            <i data-lucide="plus" class="w-4 h-4"></i> Yeni Araç Ekle
           </button>
         </div>
       </div>
@@ -667,7 +667,7 @@
     function showTankFillToast(liters, tankCapacity, vehicleName) {
       if (tankCapacity <= 0) {
         // Elektrikli araç için farklı mesaj
-        showSimpleToast('Yakit alimi kaydedildi!', `${vehicleName} icin ${liters}L yakit eklendi.`);
+        showSimpleToast('Yakıt alımı kaydedildi!', `${vehicleName} için ${liters}L yakıt eklendi.`);
         return;
       }
       
@@ -685,7 +685,7 @@
           </svg>
         </div>
         <div class="toast-content">
-          <div class="toast-title">Yakit Alimi Kaydedildi</div>
+          <div class="toast-title">Yakıt Alımı Kaydedildi</div>
           <div class="toast-message">${liters}L / ${tankCapacity}L depo kapasitesi</div>
         </div>
         <div class="toast-percent">%${percentage}</div>
@@ -747,22 +747,22 @@
       "Termo"
     ];
 
-    // Antalya gercek fiyat veritabani (akaryakit.org - Subat 2026)
+    // Antalya gerçek fiyat veritabanı (akaryakit.org - Şubat 2026)
     // Benzin ~59.33, Motorin ~62.74, LPG ~30.24 TL ortalama
     const stationBasePrices = {
-      "Opet":         { "Kursunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
-      "Shell":        { "Kursunsuz 95": 59.38, "Motorin": 62.75, "LPG": 32.56    },
-      "BP":           { "Kursunsuz 95": 59.34, "Motorin": 62.74, "LPG": null     },
-      "Petrol Ofisi": { "Kursunsuz 95": 59.34, "Motorin": 62.74, "LPG": 30.34    },
-      "Kadoil":       { "Kursunsuz 95": 59.35, "Motorin": 62.78, "LPG": 31.22    },
-      "Lukoil":       { "Kursunsuz 95": 59.45, "Motorin": 62.83, "LPG": 30.75    },
-      "Aygaz":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
-      "Socar":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
-      "Alpet":        { "Kursunsuz 95": 59.31, "Motorin": 62.74, "LPG": null     },
-      "Aytemiz":      { "Kursunsuz 95": 59.33, "Motorin": 62.72, "LPG": 30.36    },
-      "Go Petrol":    { "Kursunsuz 95": 59.32, "Motorin": 62.74, "LPG": 30.16    },
-      "Sunpet":       { "Kursunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
-      "Termo":        { "Kursunsuz 95": 59.40, "Motorin": 62.82, "LPG": 31.44    }
+      "Opet":         { "Kurşunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Shell":        { "Kurşunsuz 95": 59.38, "Motorin": 62.75, "LPG": 32.56    },
+      "BP":           { "Kurşunsuz 95": 59.34, "Motorin": 62.74, "LPG": null     },
+      "Petrol Ofisi": { "Kurşunsuz 95": 59.34, "Motorin": 62.74, "LPG": 30.34    },
+      "Kadoil":       { "Kurşunsuz 95": 59.35, "Motorin": 62.78, "LPG": 31.22    },
+      "Lukoil":       { "Kurşunsuz 95": 59.45, "Motorin": 62.83, "LPG": 30.75    },
+      "Aygaz":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Socar":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": 29.81    },
+      "Alpet":        { "Kurşunsuz 95": 59.31, "Motorin": 62.74, "LPG": null     },
+      "Aytemiz":      { "Kurşunsuz 95": 59.33, "Motorin": 62.72, "LPG": 30.36    },
+      "Go Petrol":    { "Kurşunsuz 95": 59.32, "Motorin": 62.74, "LPG": 30.16    },
+      "Sunpet":       { "Kurşunsuz 95": 59.43, "Motorin": 62.80, "LPG": null     },
+      "Termo":        { "Kurşunsuz 95": 59.40, "Motorin": 62.82, "LPG": 31.44    }
     };
 
     // Gercek fiyatlara kucuk rastgele varyasyon ekle (her guncelleme donemi icin +-0.50 TL)
@@ -772,7 +772,7 @@
       return +( basePrice + variation ).toFixed(2);
     }
 
-    // Guncel fiyatlari olustur (gercek baz fiyatlardan turetilir)
+    // Güncel fiyatları oluştur (gerçek baz fiyatlardan türetilir)
     function generateFuelPrices() {
       const generatedPrices = {};
       const now = new Date().toLocaleString('tr-TR');
@@ -780,7 +780,7 @@
       antalyaStations.forEach(stationName => {
         const base = stationBasePrices[stationName];
         generatedPrices[stationName] = {
-          "Kursunsuz 95": applyPriceVariation(base["Kursunsuz 95"]),
+          "Kurşunsuz 95": applyPriceVariation(base["Kurşunsuz 95"]),
           "Motorin":      applyPriceVariation(base["Motorin"]),
           "LPG":          base["LPG"] !== null ? applyPriceVariation(base["LPG"]) : null,
           lastUpdated: now
