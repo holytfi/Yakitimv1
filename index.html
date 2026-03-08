@@ -315,9 +315,96 @@
       0% { background-position: 200% 0; }
       100% { background-position: -200% 0; }
     }
+    
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      pointer-events: none;
+    }
+    
+    .toast {
+      background: white;
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
+      animation: toastSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1), toastSlideOut 0.4s cubic-bezier(0.7, 0, 0.84, 0) 3.5s forwards;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 280px;
+      max-width: 90vw;
+      pointer-events: auto;
+    }
+    
+    .toast-success {
+      border-left: 4px solid #10b981;
+    }
+    
+    .toast-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .toast-success .toast-icon {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .toast-content {
+      flex: 1;
+    }
+    
+    .toast-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+    
+    .toast-message {
+      font-size: 13px;
+      color: #64748b;
+    }
+    
+    .toast-percent {
+      font-size: 24px;
+      font-weight: 800;
+      color: #10b981;
+      text-align: right;
+    }
+    
+    @keyframes toastSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes toastSlideOut {
+      to {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased">
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+  
   <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative overflow-hidden">
     
     <!-- Splash Screen -->
@@ -465,34 +552,172 @@
     let fuelPricesData = {}; // Fetch ile dolacak
 
     // --- ARAÇ VERİTABANI (Açılır liste için) ---
+    // Araç modelleri ve yakıt deposu kapasiteleri (litre cinsinden)
     const carData = {
-      "Fiat": ["Egea", "Egea Cross", "Egea SW", "Linea", "Fiorino", "Doblo", "Punto", "500", "Panda", "Tipo"],
-      "Renault": ["Clio", "Clio Sport Tourer", "Megane", "Megane E-Tech", "Symbol", "Fluence", "Taliant", "Duster", "Captur", "Kadjar", "Koleos", "Zoe"],
-      "Ford": ["Focus", "Focus Active", "Fiesta", "Courier", "Transit", "Transit Custom", "Puma", "Kuga", "EcoSport", "Mustang Mach-E", "Explorer"],
-      "Volkswagen": ["Golf", "Golf GTI", "Polo", "Passat", "Passat Variant", "Tiguan", "T-Roc", "T-Cross", "Caddy", "Transporter", "Arteon", "ID.4"],
-      "Toyota": ["Corolla", "Corolla Cross", "Corolla Touring Sports", "Yaris", "Yaris Cross", "Auris", "Hilux", "C-HR", "RAV4", "Camry", "Prius", "Land Cruiser", "Proace"],
-      "Honda": ["Civic", "Civic e:HEV", "City", "CR-V", "CR-V e:HEV", "Accord", "Jazz", "HR-V", "ZR-V"],
-      "Hyundai": ["i10", "i20", "i20 Cross", "i30", "Tucson", "Elantra", "Bayon", "Accent", "Santa Fe", "Kona", "Ioniq 5", "Ioniq 6"],
-      "Kia": ["Picanto", "Rio", "Ceed", "Ceed Sportswagon", "Stonic", "Sportage", "Sorento", "Niro", "EV6", "Xceed"],
-      "Dacia": ["Duster", "Sandero", "Sandero Stepway", "Logan", "Logan MCV", "Jogger", "Spring"],
-      "Opel": ["Astra", "Astra Sports Tourer", "Corsa", "Mokka", "Crossland", "Grandland", "Insignia", "Combo", "Vivaro"],
-      "Peugeot": ["208", "308", "508", "2008", "3008", "5008", "Rifter", "Partner", "Traveller"],
-      "Citroen": ["C3", "C3 Aircross", "C4", "C5 Aircross", "C5 X", "Berlingo", "SpaceTourer"],
-      "Skoda": ["Octavia", "Fabia", "Rapid", "Superb", "Kodiaq", "Karoq", "Kamiq", "Scala"],
-      "Seat": ["Ibiza", "Leon", "Arona", "Ateca", "Tarraco", "Formentor"],
-      "Nissan": ["Micra", "Juke", "Qashqai", "X-Trail", "Navara", "Note", "Leaf", "Ariya"],
-      "Mitsubishi": ["Colt", "L200", "Eclipse Cross", "Outlander", "ASX", "Pajero Sport"],
-      "Suzuki": ["Swift", "Vitara", "S-Cross", "Across", "Jimny", "Baleno"],
-      "Mazda": ["Mazda2", "Mazda3", "Mazda6", "CX-3", "CX-5", "CX-30", "CX-60"],
-      "Subaru": ["Impreza", "Legacy", "Outback", "Forester", "XV", "WRX"],
-      "Jeep": ["Renegade", "Compass", "Cherokee", "Grand Cherokee", "Wrangler", "Avenger"],
-      "Land Rover": ["Defender", "Discovery", "Discovery Sport", "Range Rover", "Range Rover Sport", "Range Rover Evoque", "Range Rover Velar"],
-      "BMW": ["1 Serisi", "2 Serisi", "3 Serisi", "4 Serisi", "5 Serisi", "7 Serisi", "X1", "X2", "X3", "X4", "X5", "X6", "iX", "i4"],
-      "Mercedes-Benz": ["A Serisi", "B Serisi", "C Serisi", "E Serisi", "S Serisi", "GLA", "GLB", "GLC", "GLE", "GLS", "CLA", "EQA", "EQB", "EQC"],
-      "Audi": ["A1", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "e-tron", "e-tron GT"],
-      "Volvo": ["S60", "S90", "V60", "V90", "XC40", "XC60", "XC90", "C40"],
-      "Geely": ["Echo CK", "Emgrand EC7", "Emgrand X7", "Atlas", "Atlas Pro", "Coolray", "Tugella", "Okavango", "Boyue", "Azkarra", "Galaxy L7", "Preface"]
+      "Fiat": {
+        "Egea": 45, "Egea Cross": 45, "Egea SW": 45, "Linea": 45, "Fiorino": 45, 
+        "Doblo": 60, "Punto": 45, "500": 35, "Panda": 37, "Tipo": 45
+      },
+      "Renault": {
+        "Clio": 42, "Clio Sport Tourer": 45, "Megane": 50, "Megane E-Tech": 50, "Symbol": 50, 
+        "Fluence": 60, "Taliant": 50, "Duster": 50, "Captur": 48, "Kadjar": 55, "Koleos": 60, "Zoe": 0
+      },
+      "Ford": {
+        "Focus": 52, "Focus Active": 52, "Fiesta": 42, "Courier": 42, "Transit": 80, 
+        "Transit Custom": 80, "Puma": 42, "Kuga": 54, "EcoSport": 52, "Mustang Mach-E": 0, "Explorer": 70
+      },
+      "Volkswagen": {
+        "Golf": 50, "Golf GTI": 50, "Polo": 40, "Passat": 66, "Passat Variant": 66, 
+        "Tiguan": 58, "T-Roc": 50, "T-Cross": 40, "Caddy": 55, "Transporter": 80, "Arteon": 66, "ID.4": 0
+      },
+      "Toyota": {
+        "Corolla": 50, "Corolla Cross": 50, "Corolla Touring Sports": 50, "Yaris": 36, "Yaris Cross": 36, 
+        "Auris": 50, "Hilux": 80, "C-HR": 43, "RAV4": 55, "Camry": 60, "Prius": 43, "Land Cruiser": 87, "Proace": 75
+      },
+      "Honda": {
+        "Civic": 46, "Civic e:HEV": 40, "City": 40, "CR-V": 57, "CR-V e:HEV": 57, 
+        "Accord": 56, "Jazz": 40, "HR-V": 40, "ZR-V": 51
+      },
+      "Hyundai": {
+        "i10": 32, "i20": 40, "i20 Cross": 40, "i30": 50, "Tucson": 54, 
+        "Elantra": 50, "Bayon": 40, "Accent": 43, "Santa Fe": 67, "Kona": 45, "Ioniq 5": 0, "Ioniq 6": 0
+      },
+      "Kia": {
+        "Picanto": 35, "Rio": 45, "Ceed": 50, "Ceed Sportswagon": 50, "Stonic": 45, 
+        "Sportage": 54, "Sorento": 67, "Niro": 43, "EV6": 0, "Xceed": 45
+      },
+      "Dacia": {
+        "Duster": 50, "Sandero": 50, "Sandero Stepway": 50, "Logan": 50, "Logan MCV": 50, "Jogger": 50, "Spring": 0
+      },
+      "Opel": {
+        "Astra": 52, "Astra Sports Tourer": 52, "Corsa": 44, "Mokka": 44, "Crossland": 44, 
+        "Grandland": 53, "Insignia": 62, "Combo": 50, "Vivaro": 70
+      },
+      "Peugeot": {
+        "208": 44, "308": 52, "508": 62, "2008": 44, "3008": 52, "5008": 56, "Rifter": 50, "Partner": 50, "Traveller": 70
+      },
+      "Citroen": {
+        "C3": 45, "C3 Aircross": 45, "C4": 50, "C5 Aircross": 53, "C5 X": 55, "Berlingo": 50, "SpaceTourer": 70
+      },
+      "Skoda": {
+        "Octavia": 50, "Fabia": 40, "Rapid": 55, "Superb": 66, "Kodiaq": 58, "Karoq": 50, "Kamiq": 50, "Scala": 50
+      },
+      "Seat": {
+        "Ibiza": 40, "Leon": 50, "Arona": 40, "Ateca": 50, "Tarraco": 60, "Formentor": 55
+      },
+      "Nissan": {
+        "Micra": 41, "Juke": 46, "Qashqai": 55, "X-Trail": 55, "Navara": 80, "Note": 41, "Leaf": 0, "Ariya": 0
+      },
+      "Mitsubishi": {
+        "Colt": 42, "L200": 75, "Eclipse Cross": 63, "Outlander": 60, "ASX": 60, "Pajero Sport": 68
+      },
+      "Suzuki": {
+        "Swift": 37, "Vitara": 47, "S-Cross": 47, "Across": 55, "Jimny": 40, "Baleno": 37
+      },
+      "Mazda": {
+        "Mazda2": 44, "Mazda3": 51, "Mazda6": 62, "CX-3": 44, "CX-5": 56, "CX-30": 51, "CX-60": 58
+      },
+      "Subaru": {
+        "Impreza": 50, "Legacy": 60, "Outback": 63, "Forester": 63, "XV": 63, "WRX": 60
+      },
+      "Jeep": {
+        "Renegade": 48, "Compass": 55, "Cherokee": 60, "Grand Cherokee": 68, "Wrangler": 70, "Avenger": 54
+      },
+      "Land Rover": {
+        "Defender": 90, "Discovery": 85, "Discovery Sport": 65, "Range Rover": 90, 
+        "Range Rover Sport": 85, "Range Rover Evoque": 67, "Range Rover Velar": 82
+      },
+      "BMW": {
+        "1 Serisi": 50, "2 Serisi": 50, "3 Serisi": 59, "4 Serisi": 59, "5 Serisi": 68, 
+        "7 Serisi": 78, "X1": 51, "X2": 51, "X3": 65, "X4": 65, "X5": 80, "X6": 83, "iX": 0, "i4": 0
+      },
+      "Mercedes-Benz": {
+        "A Serisi": 43, "B Serisi": 49, "C Serisi": 66, "E Serisi": 66, "S Serisi": 76, 
+        "GLA": 43, "GLB": 49, "GLC": 62, "GLE": 85, "GLS": 91, "CLA": 50, "EQA": 0, "EQB": 0, "EQC": 0
+      },
+      "Audi": {
+        "A1": 40, "A3": 50, "A4": 58, "A5": 58, "A6": 63, "A7": 63, "A8": 82, 
+        "Q2": 50, "Q3": 60, "Q5": 65, "Q7": 85, "Q8": 85, "e-tron": 0, "e-tron GT": 0
+      },
+      "Volvo": {
+        "S60": 60, "S90": 60, "V60": 60, "V90": 60, "XC40": 54, "XC60": 71, "XC90": 71, "C40": 0
+      },
+      "Geely": {
+        "Echo CK": 45, "Emgrand EC7": 50, "Emgrand X7": 60, "Atlas": 55, "Atlas Pro": 55, 
+        "Coolray": 45, "Tugella": 60, "Okavango": 55, "Boyue": 55, "Azkarra": 55, "Galaxy L7": 60, "Preface": 66
+      }
     };
+    
+    // Araç modeli listesini almak için yardımcı fonksiyon
+    function getModelsForMake(make) {
+      if (!carData[make]) return [];
+      return Object.keys(carData[make]);
+    }
+    
+    // Yakıt deposu kapasitesini almak için yardımcı fonksiyon
+    function getTankCapacity(make, model) {
+      if (carData[make] && carData[make][model] !== undefined) {
+        return carData[make][model];
+      }
+      return 50; // Varsayılan depo kapasitesi
+    }
+    
+    // Toast bildirim fonksiyonu
+    function showTankFillToast(liters, tankCapacity, vehicleName) {
+      if (tankCapacity <= 0) {
+        // Elektrikli araç için farklı mesaj
+        showSimpleToast('Yakit alimi kaydedildi!', `${vehicleName} icin ${liters}L yakit eklendi.`);
+        return;
+      }
+      
+      const percentage = Math.min(100, Math.round((liters / tankCapacity) * 100));
+      const toastContainer = document.getElementById('toast-container');
+      
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success';
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h18v18H3z" fill="none"/>
+            <path d="M12 8v8"/>
+            <path d="M8 12h8"/>
+          </svg>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">Yakit Alimi Kaydedildi</div>
+          <div class="toast-message">${liters}L / ${tankCapacity}L depo kapasitesi</div>
+        </div>
+        <div class="toast-percent">%${percentage}</div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // 4 saniye sonra kaldır
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.remove();
+        }
+      }, 4000);
+    }
+    
+    function showSimpleToast(title, message) {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-success';
+      toast.innerHTML = `
+        <div class="toast-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+      `;
+      toastContainer.appendChild(toast);
+      setTimeout(() => { if (toast.parentNode) toast.remove(); }, 4000);
+    }
 
     // --- DOM YARDIMCILARI ---
     const screens = document.querySelectorAll('.screen');
@@ -598,19 +823,21 @@
 
     makeSelect.addEventListener('change', (e) => {
       const make = e.target.value;
-      modelSelect.innerHTML = '<option value="">Model Seçiniz</option>';
+      modelSelect.innerHTML = '<option value="">Model Seciniz</option>';
       if (make && carData[make]) {
         modelSelect.disabled = false;
         modelSelect.classList.remove('bg-slate-50', 'text-slate-500');
         modelSelect.classList.add('bg-white');
-        carData[make].forEach(model => {
-          modelSelect.add(new Option(model, model));
+        getModelsForMake(make).forEach(model => {
+          const tankCapacity = getTankCapacity(make, model);
+          const tankInfo = tankCapacity > 0 ? ` (${tankCapacity}L depo)` : ' (Elektrikli)';
+          modelSelect.add(new Option(model + tankInfo, model));
         });
       } else {
         modelSelect.disabled = true;
         modelSelect.classList.add('bg-slate-50', 'text-slate-500');
         modelSelect.classList.remove('bg-white');
-        modelSelect.innerHTML = '<option value="">Önce Marka Seçiniz</option>';
+        modelSelect.innerHTML = '<option value="">Once Marka Seciniz</option>';
       }
     });
 
@@ -796,14 +1023,19 @@
     priceInput.addEventListener('input', calcTotal);
 
     document.getElementById('btn-save-fillup').addEventListener('click', () => {
-      const station = stationSelect.value || 'Bilinmeyen İstasyon';
+      const station = stationSelect.value || 'Bilinmeyen Istasyon';
       const fuelType = typeSelect.value;
       const liters = parseFloat(litersInput.value);
       const pricePerLiter = parseFloat(priceInput.value);
 
       if (!liters || !pricePerLiter || !stationSelect.value) {
-        return alert('Lütfen istasyon seçin, litre ve fiyat giriniz.');
+        return alert('Lutfen istasyon secin, litre ve fiyat giriniz.');
       }
+
+      // Aktif aracın bilgilerini al
+      const activeVehicle = vehicles.find(v => v.id === activeVehicleId);
+      const tankCapacity = activeVehicle ? getTankCapacity(activeVehicle.make, activeVehicle.model) : 50;
+      const vehicleName = activeVehicle ? `${activeVehicle.make} ${activeVehicle.model}` : 'Arac';
 
       fillUps.push({
         id: Date.now().toString(),
@@ -818,9 +1050,13 @@
       litersInput.value = '';
       priceInput.value = '';
       document.getElementById('fill-total').innerText = 'TL0.00';
+      stationInfoDiv.classList.add('hidden');
       
       showScreen('dashboard-screen');
       renderDashboard();
+      
+      // Depo yüzdesini gösteren toast bildirimi
+      showTankFillToast(liters, tankCapacity, vehicleName);
     });
 
     // --- SETTINGS LOGIC ---
